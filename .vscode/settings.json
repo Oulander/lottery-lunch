@@ -11,5 +11,13 @@
   "eslint.alwaysShowStatus": true,
   "eslint.validate": [
     "javascript"
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "editor.selectionBackground": "#444444",
+    "editor.selectionHighlightBackground": "#373737",
+    "editor.wordHighlightStrongBackground": "#333333",
+    "activityBar.background": "#4A2305",
+    "titleBar.activeBackground": "#683107",
+    "titleBar.activeForeground": "#FFFBF8"
+  }
 }

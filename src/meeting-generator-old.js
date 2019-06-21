@@ -1,4 +1,4 @@
-export default function generateMeetings() {
+export default function generateMeetingsOld() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('meetingGenerator');
   const values = sheet.getRange(1, 1, 999, 999);
 

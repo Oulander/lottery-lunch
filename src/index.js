@@ -1,3 +1,3 @@
-import generateMeetings from './meetingGenerator';
+import generateMeetings from './meeting-generator';
 
 global.generateMeetings = generateMeetings;
