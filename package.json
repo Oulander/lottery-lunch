@@ -25,7 +25,6 @@
     "apps-script"
   ],
   "dependencies": {
-    "dataframe-js": "^1.4.1",
     "core-js": "^2.6.5"
   },
   "devDependencies": {
