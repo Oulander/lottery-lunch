@@ -49,12 +49,7 @@ export function getParticipants() {
 
   const parsedParticipants = participantRawData.map(row => parseParticipantRow(row));
 
-  const participantsArray = pickLatestParticipantDatapoint(
-    parsedParticipants,
-    participant => participant.email
-  );
-
-  Logger.log(participantsArray.map(participant => [participant.firstName, participant.email]));
+  const participantsArray = pickLatestParticipantDatapoint(parsedParticipants);
 
   return participantsArray;
 }
@@ -65,5 +60,12 @@ export function getMeetings() {
     .getRange(2, 2, meetingSheet.getLastRow(), meetingSheet.getLastColumn())
     .getValues();
 
-  return meetingRawData;
+  const trimmedMeetingData = meetingRawData.map(meeting => {
+    const firstPerson = meeting[0].replace(',', '').trim();
+    const secondPerson = meeting[1].replace(',', '').trim();
+
+    return [firstPerson, secondPerson];
+  });
+
+  return trimmedMeetingData;
 }

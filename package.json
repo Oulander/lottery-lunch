@@ -25,7 +25,8 @@
     "apps-script"
   ],
   "dependencies": {
-    "core-js": "^2.6.5"
+    "core-js": "^2.6.5",
+    "lodash": "^4.17.11"
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",
