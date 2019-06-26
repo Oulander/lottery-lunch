@@ -1,19 +1,28 @@
+const meetingSheetName = 'meetings';
+const responseSheetName = 'Form Responses 1';
+
 function parseParticipantRow(row) {
   const lastUpdatedColumn = 0;
   const firstNameColumn = 1;
   const lastNameColumn = 2;
   const phoneColumn = 3;
   const emailColumn = 4;
-  const peopleToDropColumn = 5;
+  const blockListColumn = 5;
   const isInactiveColumn = 6;
+
+  const firstName = row[firstNameColumn].trim();
+  const lastName = row[lastNameColumn].trim();
+
+  const fullName = `${firstName} ${lastName}`;
 
   const participant = {
     lastUpdated: row[lastUpdatedColumn],
-    firstName: row[firstNameColumn],
-    lastName: row[lastNameColumn],
+    firstName,
+    lastName,
+    fullName,
     phone: row[phoneColumn],
     email: row[emailColumn].trim().toLowerCase(),
-    peopleToDrop: row[peopleToDropColumn].split(',').map(name => name.trim()),
+    blockList: row[blockListColumn].split(',').map(name => name.trim()),
     isActive: !(row[isInactiveColumn].length > 0)
   };
 
@@ -37,11 +46,8 @@ function pickLatestParticipantDatapoint(participants) {
   );
 }
 
-export function getParticipants() {
-  //   const participantSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('participants');
-  //   participantSheet.clear();
-
-  const responseSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Form Responses 1');
+export function readParticipants() {
+  const responseSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(responseSheetName);
 
   const participantRawData = responseSheet
     .getRange(2, 1, responseSheet.getLastRow(), responseSheet.getLastColumn())
@@ -54,8 +60,8 @@ export function getParticipants() {
   return participantsArray;
 }
 
-export function getMeetings() {
-  const meetingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('meetings');
+export function readMeetings() {
+  const meetingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(meetingSheetName);
   const meetingRawData = meetingSheet
     .getRange(2, 2, meetingSheet.getLastRow(), meetingSheet.getLastColumn())
     .getValues();
@@ -68,4 +74,15 @@ export function getMeetings() {
   });
 
   return trimmedMeetingData;
+}
+
+export function writeMeetings(newMeetings) {
+  const meetingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(meetingSheetName);
+  const rangeToWrite = meetingSheet.getRange(
+    meetingSheet.getLastRow() + 1,
+    2,
+    newMeetings.length,
+    2
+  );
+  rangeToWrite.setValues(newMeetings);
 }
