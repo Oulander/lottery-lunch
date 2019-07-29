@@ -3,3 +3,6 @@ dist/
 
 .clasprc.json
 .clasp.json
+.DS_Store
+creds.json
+appsscript.json

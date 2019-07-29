@@ -1,13 +1,12 @@
 {
   "name": "apps-script-starter",
   "version": "3.4.1",
-  "description": "Setup a local development environment for Google Apps Script",
+  "description": "A lottery lunch tool running on Google's Spreadsheets, Forms & Gmail",
   "author": {
-    "name": "Amit Agarwal",
-    "email": "amit@labnol.org",
-    "url": "https://ctrlq.org"
+    "name": "Oula Antere",
+    "email": "oula.antere@gmail.com",
+    "url": "https://linkedin.com/in/oulaantere"
   },
-  "homepage": "https://digitalinspiration.com/",
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {

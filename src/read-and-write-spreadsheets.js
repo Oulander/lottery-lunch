@@ -63,14 +63,14 @@ export function readParticipants() {
 export function readMeetings() {
   const meetingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(meetingSheetName);
   const meetingRawData = meetingSheet
-    .getRange(2, 2, meetingSheet.getLastRow(), meetingSheet.getLastColumn())
+    .getRange(2, 1, meetingSheet.getLastRow(), meetingSheet.getLastColumn())
     .getValues();
 
   const trimmedMeetingData = meetingRawData.map(meeting => {
-    const firstPerson = meeting[0].replace(',', '').trim();
-    const secondPerson = meeting[1].replace(',', '').trim();
-
-    return [firstPerson, secondPerson];
+    const firstPerson = meeting[1].replace(',', '').trim();
+    const secondPerson = meeting[2].replace(',', '').trim();
+    const emailSentText = meeting[0];
+    return [emailSentText, firstPerson, secondPerson];
   });
 
   return trimmedMeetingData;
@@ -85,4 +85,10 @@ export function writeMeetings(newMeetings) {
     2
   );
   rangeToWrite.setValues(newMeetings);
+}
+
+export function writeEmailSent(row, stringToWrite) {
+  const meetingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(meetingSheetName);
+  const cellToWrite = meetingSheet.getRange(row, 1);
+  cellToWrite.setValue(stringToWrite);
 }

@@ -100,7 +100,7 @@ export default function generateMeetings() {
   let meetingsArray = chooseMeetingsBasedOnScore(possibleMeetingsScored);
 
   // The block below will try to re-score and re-pick the meetings five times
-  // if there's a meeting with people who have already met. This is not very efficient or
+  // if there's a meeting between people who have already met. This is not very efficient or
   // elegant, but will get the job done as long as the number of people participating
   // doesn't get too high. Should be rewritten if performance becomes an issue.
   for (let i = 0; i < 5; i += 1) {

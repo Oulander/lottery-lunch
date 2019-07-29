@@ -1,10 +1,10 @@
 /**
  * @file webpack.config.js
- * @author Amit Agarwal
- * @email amit@labnol.org
+ * @author Oula Antere
+ * @email oula.antere@gmail.com
  *
- * Google Apps Script Starter Kit
- * https://github.com/labnol/apps-script-starter
+ * Using Amit Agarwal's Google Apps Script Starter Kit
+ * Check it at https://github.com/labnol/apps-script-starter
  */
 
 const path = require('path');

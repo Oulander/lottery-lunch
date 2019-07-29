@@ -1,4 +1,5 @@
-import generateMeetings from './meeting-generator';
+import generateMeetings from './generate-meetings';
+import sendEmails from './send-emails';
 
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
@@ -8,10 +9,6 @@ function onOpen() {
     .addSeparator()
     .addItem('Send emails', 'sendEmails')
     .addToUi();
-}
-
-function sendEmails() {
-  SpreadsheetApp.getUi().alert('Email functionality not yet available!');
 }
 
 global.onOpen = onOpen;
