@@ -4,7 +4,7 @@ import { readMeetings, readParticipants, writeEmailSent } from './read-and-write
 export default function sendEmails() {
   const participants = keyBy(readParticipants(), 'email');
   const meetings = readMeetings();
-  const senderName = 'Eksponentiaalinen tällibotti';
+  const senderName = 'Tällibotti';
 
   const quotaErrorMessage = 'Gmail-quota täynnä, yritä huomenna uudelleen!';
 
@@ -36,9 +36,9 @@ export default function sendEmails() {
     
       <ul>
         <li>
-          ${person1.fullName},&nbsp;${person1.phone},&nbsp;${person1.email}&nbsp;&nbsp;&nbsp;&nbsp;<--&nbsp;aloitevastuussa*
+          ${person1.fullName},&nbsp;${person1.phone},${person1.email}&nbsp;&nbsp;&nbsp;&nbsp;<--&nbsp;aloitevastuussa*
         </li>
-        <li>${person2.fullName},&nbsp;${person2.phone},&nbsp;${person2.email}</li>
+        <li>${person2.fullName},&nbsp;${person2.phone},${person2.email}</li>
       </ul>
     
       <p>Iloista tälläilyä!</p>
