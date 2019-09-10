@@ -10,7 +10,9 @@ TODO: An example spreadsheet with mock data.
 
 ### Development environment
 
-Is based on Amit Agarwal's awesome Apps Script starter kit
+TODO: Create config file that has all stuff that is specific for a single instance of this project.
+
+Based on Amit Agarwal's awesome Apps Script starter kit.
 For more info:
 https://github.com/labnol/apps-script-starter
 
