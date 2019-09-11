@@ -5,5 +5,3 @@ dist/
 .clasp.json
 .DS_Store
 creds.json
-package-lock.json
-yarn.lock
