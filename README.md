@@ -36,10 +36,8 @@ Enable script API
 Go to script.google.com --> settings, enable Google Apps Script API from settings
 ```
 
-Create clasp.json to the root
-Get script id from the spreadsheet's script editor
-
-TODO: Add example config file
+Create clasp.json to the root.
+Get the script id from the spreadsheet's script editor.
 
 ```
 {
@@ -47,6 +45,8 @@ TODO: Add example config file
   "rootDir": "./dist",
 }
 ```
+TODO: Add example clasp.json file
+
 
 Build your code and check that the ./dist folder got populated
 
