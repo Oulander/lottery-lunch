@@ -6,6 +6,45 @@ import {
   writeEmailSent
 } from './read-and-write-spreadsheets';
 
+function generateContactDetails(person1, person2) {
+  function detailsForSinglePerson(person) {
+    const contacts = {};
+    contacts.Email = person.email;
+    const additionalContacts = person.optionalTypeValues.typeC;
+    const additionalContactFields = Object.keys(additionalContacts);
+    additionalContactFields.forEach(field => {
+      contacts[field] = additionalContacts[field];
+    });
+    return contacts;
+  }
+
+  const person1Details = detailsForSinglePerson(person1);
+  const person2Details = detailsForSinglePerson(person1);
+
+  function formatContactDetails(details) {
+    const fields = Object.keys(details);
+    const formattedDetails = '';
+    fields.forEach(field => {
+      const formattedRow = `<br/><b>${field}</b>: ${details[field]}`;
+      formattedDetails.concat(formattedRow);
+    });
+  }
+
+  const person1Formatted = formatContactDetails(person1Details);
+  const person2Formatted = formatContactDetails(person2Details);
+
+  const combinedDetails = `
+    <p>${person1.fullName}:
+      ${person1Formatted}
+    </p>
+    <p>${person2.fullName}:
+    ${person2Formatted}
+    </p>
+  `;
+
+  return combinedDetails;
+}
+
 function replacePlaceholders(inputString, person1, person2) {
   const placeHoldersToReplace = [
     { '{person1.firstName}': person1.firstName },
@@ -14,7 +53,8 @@ function replacePlaceholders(inputString, person1, person2) {
     { '{person2.lastName}': person2.lastName },
     { '{person1.fullName}': person1.fullName },
     { '{person2.fullName}': person2.fullName },
-    { '{personWithInitiative}': person1.fullName }
+    { '{personWithInitiative}': person1.fullName },
+    { '{contactDetails}': generateContactDetails(person1, person2) }
   ];
 
   const replaced = placeHoldersToReplace.reduce(
@@ -58,45 +98,6 @@ export default function sendEmails() {
       const person2 = participants[person2email];
 
       const { senderName, subject, htmlBody } = generateEmailContent(person1, person2, settings);
-
-      //   const htmlBody = `
-      //   <html>
-      //   <p>
-      //     Hellurei, <strong>${person1.firstName}</strong> ja <strong>${person2.firstName}</strong>! Taas
-      //     jyrähtää käyntiin eksponentiaalinen tällijakso!
-      //   </p>
-
-      //   <p>
-      //     Tässä teidän tälliparinne yhteystiedot:
-      //   </p>
-
-      //   <ul>
-      //     <li>
-      //       ${person1.fullName},&nbsp;${person1.phone},${person1.email}&nbsp;&nbsp;&nbsp;&nbsp;<--&nbsp;aloitevastuussa*
-      //     </li>
-      //     <li>${person2.fullName},&nbsp;${person2.phone},${person2.email}</li>
-      //   </ul>
-
-      //   <p>Iloista tälläilyä!</p>
-
-      //   <p>Terkuin,<br />Eksponentiaalinen tällibotti</p>
-
-      //   <p>
-      //     <small
-      //       >* Tämän henkilön tehtävänä on ottaa yhteyttä tällipariin ajan ja paikan sopimiseksi. Toki
-      //       myös toinenkin henkilö saa halutessaan ottaa kopin yhteydenpidon aloittamisesta :)
-      //     </small>
-      //   </p>
-      //   <p>
-      //     <small
-      //       >Jos haluat jäädä tauolle tälleistä, voit päivittää tietosi
-      //       <a href="https://forms.gle/GpeFnmc9pa3R82kJ8">täällä</a>.<br />
-      //       Onko sinulla palautetta tai kehitysideoita tällityökalun suhteen? Laita niitä tulemaan
-      //       työkalun kehittäjälle <a href="mailto:oula.antere@gmail.com">Oulalle</a>!
-      //     </small>
-      //   </p>
-      // </html>
-      //   `;
 
       const basicOptions = {
         htmlBody,

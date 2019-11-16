@@ -140,7 +140,7 @@ export function writeEmailSent(row, stringToWrite) {
 export function readSettings() {
   const settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(settingsSheetName);
 
-  const settingsRaw = settingsSheet.getRange(2, 2, 3, 1).getValues();
+  const settingsRaw = settingsSheet.getRange(2, 2, 4, 1).getValues();
 
   const settings = {
     leftOverPerson: settingsRaw[0][0],
