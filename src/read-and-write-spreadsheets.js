@@ -139,16 +139,17 @@ export function writeEmailSent(row, stringToWrite) {
   cellToWrite.setValue(stringToWrite);
 }
 
-export function readEmailTemplate() {
+export function readSettings() {
   const settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(settingsSheetName);
 
-  const emailTemplateRawData = settingsSheet.getRange(3, 2, 3, 1).getValues();
+  const settingsRaw = settingsSheet.getRange(2, 2, 3, 1).getValues();
 
-  const emailTemplate = {
-    senderNameRaw: emailTemplateRawData[0][0],
-    subjectRaw: emailTemplateRawData[1][0],
-    htmlBodyRaw: emailTemplateRawData[2][0]
+  const settings = {
+    leftOverPerson: settingsRaw[0][0],
+    senderNameRaw: settingsRaw[1][0],
+    subjectRaw: settingsRaw[2][0],
+    htmlBodyRaw: settingsRaw[3][0]
   };
 
-  return emailTemplate;
+  return settings;
 }

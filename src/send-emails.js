@@ -1,7 +1,7 @@
 import { keyBy } from 'lodash';
 import {
   readMeetings,
-  readEmailTemplate,
+  readSettings,
   readParticipants,
   writeEmailSent
 } from './read-and-write-spreadsheets';
@@ -25,8 +25,8 @@ function replacePlaceholders(inputString, person1, person2) {
   return replaced;
 }
 
-function generateEmailContent(person1, person2, emailTemplate) {
-  const { senderNameRaw, subjectRaw, htmlBodyRaw } = emailTemplate;
+function generateEmailContent(person1, person2, settings) {
+  const { senderNameRaw, subjectRaw, htmlBodyRaw } = settings;
 
   const senderName = senderNameRaw;
   const subject = replacePlaceholders(subjectRaw, person1, person2);
@@ -40,7 +40,7 @@ export default function sendEmails() {
 
   const meetings = readMeetings();
 
-  const emailTemplate = readEmailTemplate();
+  const settings = readSettings();
 
   const quotaErrorMessage = `Your email send quota is full, try again tomorrow or have another person run the 'Send emails' script!`;
 
@@ -57,11 +57,7 @@ export default function sendEmails() {
       const person1 = participants[person1email];
       const person2 = participants[person2email];
 
-      const { senderName, subject, htmlBody } = generateEmailContent(
-        person1,
-        person2,
-        emailTemplate
-      );
+      const { senderName, subject, htmlBody } = generateEmailContent(person1, person2, settings);
 
       //   const htmlBody = `
       //   <html>
