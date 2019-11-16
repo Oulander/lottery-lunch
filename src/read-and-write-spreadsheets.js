@@ -3,12 +3,15 @@ const responseSheetName = 'Form Responses 1';
 
 function parseParticipantRow(row) {
   const lastUpdatedColumn = 0;
-  const firstNameColumn = 1;
-  const lastNameColumn = 2;
-  const phoneColumn = 3;
-  const emailColumn = 4;
-  const blockListColumn = 5;
-  const isInactiveColumn = 6;
+  const emailColumn = 1;
+  const isInactiveColumn = 2; // subscription field
+  const firstNameColumn = 3;
+  const lastNameColumn = 4;
+  // optional columns -->
+  const phoneColumn = 5;
+  // const telegramColumn = 6;
+  // const telegramColumn = 6;
+  const blockListColumn = 8;
 
   const firstName = row[firstNameColumn].trim();
   const lastName = row[lastNameColumn].trim();
@@ -23,7 +26,7 @@ function parseParticipantRow(row) {
     phone: row[phoneColumn],
     email: row[emailColumn].trim().toLowerCase(),
     blockList: row[blockListColumn].split(',').map(name => name.trim()),
-    isActive: !(row[isInactiveColumn].length > 0)
+    isActive: !(row[isInactiveColumn] === 'Subscribe')
   };
 
   return participant;
