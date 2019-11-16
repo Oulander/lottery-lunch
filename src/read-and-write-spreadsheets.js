@@ -1,5 +1,6 @@
 const meetingSheetName = 'meetings';
 const responseSheetName = 'Form Responses 1';
+const settingsSheetName = 'settings';
 const optionalTypes = {
   typeA: '{type: A}',
   typeB: '{type: B}',
@@ -89,9 +90,6 @@ export function readParticipants() {
     .getRange(1, 1, responseSheet.getLastRow(), responseSheet.getLastColumn())
     .getValues();
 
-  Logger.log('rawdata');
-  Logger.log(sheetRawData);
-
   const columnHeaderRow = sheetRawData[0];
   const participantRows = sheetRawData.slice(1);
 
@@ -112,7 +110,6 @@ export function readMeetings() {
         .getValues()
     : [];
 
-  Logger.log(meetingRawData);
   const trimmedMeetingData = meetingRawData.length
     ? meetingRawData.map(meeting => {
         const firstPerson = meeting[1].replace(',', '').trim();
@@ -140,4 +137,18 @@ export function writeEmailSent(row, stringToWrite) {
   const meetingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(meetingSheetName);
   const cellToWrite = meetingSheet.getRange(row, 1);
   cellToWrite.setValue(stringToWrite);
+}
+
+export function readEmailTemplate() {
+  const settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(settingsSheetName);
+
+  const emailTemplateRawData = settingsSheet.getRange(3, 2, 3, 1).getValues();
+
+  const emailTemplate = {
+    senderNameRaw: emailTemplateRawData[0][0],
+    subjectRaw: emailTemplateRawData[1][0],
+    htmlBodyRaw: emailTemplateRawData[2][0]
+  };
+
+  return emailTemplate;
 }

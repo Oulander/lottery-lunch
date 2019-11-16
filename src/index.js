@@ -3,7 +3,6 @@ import sendEmails from './send-emails';
 
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
-  // Or DocumentApp or FormApp.
   ui.createMenu('Lottery Lunch Menu')
     .addItem('Generate meetings', 'generateMeetings')
     .addSeparator()
