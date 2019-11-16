@@ -25,8 +25,8 @@ Read instructions.pdf and copy initial form to your drive from [this link.](http
 Make sure that
 
 - the form output points to the spreadsheet
-- there is a `Form responses 1` sheet in the spreadsheet (or whatever that is in the language of your Google Apps)
-- `Form responses 1` is the first sheet of the spreadsheet
+- there is a `Form responses 1` sheet in the spreadsheet
+- If your spreadsheet is in another language, rename the form response sheet to `Form responses 1`
 
 ### Get the source code
 
