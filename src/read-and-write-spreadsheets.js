@@ -13,8 +13,8 @@ function parseParticipantRow(row) {
   // const telegramColumn = 6;
   const blockListColumn = 8;
 
-  const firstName = row[firstNameColumn].trim();
-  const lastName = row[lastNameColumn].trim();
+  const firstName = row[firstNameColumn] ? row[firstNameColumn].trim() : '';
+  const lastName = row[lastNameColumn] ? row[lastNameColumn].trim() : '';
 
   const fullName = `${firstName} ${lastName}`;
 
@@ -26,7 +26,7 @@ function parseParticipantRow(row) {
     phone: row[phoneColumn],
     email: row[emailColumn].trim().toLowerCase(),
     blockList: row[blockListColumn].split(',').map(name => name.trim()),
-    isActive: !(row[isInactiveColumn] === 'Subscribe')
+    isActive: row[isInactiveColumn] === 'Subscribe'
   };
 
   return participant;
@@ -53,8 +53,11 @@ export function readParticipants() {
   const responseSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(responseSheetName);
 
   const participantRawData = responseSheet
-    .getRange(2, 1, responseSheet.getLastRow(), responseSheet.getLastColumn())
+    .getRange(1, 1, responseSheet.getLastRow(), responseSheet.getLastColumn())
     .getValues();
+
+  Logger.log('rawdata');
+  Logger.log(participantRawData);
 
   const parsedParticipants = participantRawData.map(row => parseParticipantRow(row));
 
@@ -65,16 +68,23 @@ export function readParticipants() {
 
 export function readMeetings() {
   const meetingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(meetingSheetName);
-  const meetingRawData = meetingSheet
-    .getRange(2, 1, meetingSheet.getLastRow(), meetingSheet.getLastColumn())
-    .getValues();
+  const hasData = meetingSheet.getLastRow() > 1;
 
-  const trimmedMeetingData = meetingRawData.map(meeting => {
-    const firstPerson = meeting[1].replace(',', '').trim();
-    const secondPerson = meeting[2].replace(',', '').trim();
-    const emailSentText = meeting[0];
-    return [emailSentText, firstPerson, secondPerson];
-  });
+  const meetingRawData = hasData
+    ? meetingSheet
+        .getRange(2, 1, meetingSheet.getLastRow() - 1, meetingSheet.getLastColumn())
+        .getValues()
+    : [];
+
+  Logger.log(meetingRawData);
+  const trimmedMeetingData = meetingRawData.length
+    ? meetingRawData.map(meeting => {
+        const firstPerson = meeting[1].replace(',', '').trim();
+        const secondPerson = meeting[2].replace(',', '').trim();
+        const emailSentText = meeting[0];
+        return [emailSentText, firstPerson, secondPerson];
+      })
+    : [];
 
   return trimmedMeetingData;
 }
