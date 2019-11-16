@@ -1,3 +1,5 @@
+import { pickBy } from 'lodash.pickby';
+
 const meetingSheetName = 'meetings';
 const responseSheetName = 'Form Responses 1';
 const settingsSheetName = 'settings';
@@ -67,20 +69,18 @@ function parseParticipantRow(participantData, columnHeaders) {
 }
 
 function pickLatestParticipantDatapoint(participants) {
-  const participantsToKeep = [];
+  const participantsToKeep = {};
 
   participants.forEach(participant => {
-    const index = participantsToKeep.map(p => p.email).indexOf(participant.email);
-    if (index === -1) {
-      participantsToKeep.push(participant);
-    } else {
-      participantsToKeep[index] = participant;
+    if (participant.email.length > 0) {
+      participantsToKeep[participant.email] = participant;
     }
   });
+  Logger.log(participantsToKeep);
 
-  return participantsToKeep.filter(
-    participant => participant.email.length > 0 && participant.isActive === true
-  );
+  const subscribedParticipants = pickBy(participantsToKeep, participant => participant.isActive);
+
+  return subscribedParticipants;
 }
 
 export function readParticipants() {
@@ -92,12 +92,10 @@ export function readParticipants() {
 
   const columnHeaderRow = sheetRawData[0];
   const participantRows = sheetRawData.slice(1);
-
   const parsedParticipants = participantRows.map(row => parseParticipantRow(row, columnHeaderRow));
+  const participantsObject = pickLatestParticipantDatapoint(parsedParticipants);
 
-  const participantsArray = pickLatestParticipantDatapoint(parsedParticipants);
-
-  return participantsArray;
+  return participantsObject;
 }
 
 export function readMeetings() {

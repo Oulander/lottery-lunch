@@ -25,7 +25,8 @@
   ],
   "dependencies": {
     "core-js": "^2.6.5",
-    "lodash": "^4.17.15"
+    "lodash.flatten": "^4.4.0",
+    "lodash.pickby": "^4.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
@@ -51,6 +52,8 @@
     "eslint-plugin-prettier": "^3.0.1",
     "gas-lib": "^2.0.3",
     "gas-webpack-plugin": "^1.0.2",
+    "lodash.flatten": "^4.4.0",
+    "lodash.pickby": "^4.6.0",
     "prettier": "^1.17.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.39.3",

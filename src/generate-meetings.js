@@ -1,4 +1,4 @@
-import { flatten } from 'lodash';
+import { flatten } from 'lodash.flatten';
 import { readParticipants, readMeetings, writeMeetings } from './read-and-write-spreadsheets';
 
 function generatePossibleMeetings(list) {
@@ -13,35 +13,54 @@ function generatePossibleMeetings(list) {
   return pairs;
 }
 
-function getBlockListScore(email1, email2, participants) {
-  const person1 = participants.filter(participant => participant.email === email1)[0];
-  const person2 = participants.filter(participant => participant.email === email2)[0];
+// function getBlockListScore(person1Id, person2Id, participants) {
+//   const person1 = participants.filter(participant => participant.email === person1Id)[0];
+//   const person2 = participants.filter(participant => participant.email === person2Id)[0];
 
-  const person2InPerson1sList =
-    person1.blockList.map(name => name.toLowerCase()).indexOf(person2.fullName.toLowerCase()) !==
-    -1;
+//   const person2InPerson1sList =
+//     person1.blockList.map(name => name.toLowerCase()).indexOf(person2.fullName.toLowerCase()) !==
+//     -1;
 
-  const person1InPerson2sList =
-    person2.blockList.map(name => name.toLowerCase()).indexOf(person1.fullName.toLowerCase()) !==
-    -1;
+//   const person1InPerson2sList =
+//     person2.blockList.map(name => name.toLowerCase()).indexOf(person1.fullName.toLowerCase()) !==
+//     -1;
 
-  return person2InPerson1sList || person1InPerson2sList ? 5 : 0;
+//   return person2InPerson1sList || person1InPerson2sList ? 5 : 0;
+// }
+
+function getTypeAScore(person1Id, person2Id, participants) {
+  const p1TypeAObj = participants[person1Id].optionalTypeValues.typeA;
+  const p2TypeAObj = participants[person2Id].optionalTypeValues.typeA;
+
+  const score = Object.keys(p1TypeAObj).reduce((total, curr) => {
+    if (p1TypeAObj[curr] === p2TypeAObj[curr]) {
+      return total + 5;
+    }
+    return total;
+  }, 0);
+
+  return score;
 }
 
 function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participants) {
   const possibleMeetingsScored = allPossibleMeetings.map(meeting => {
-    const person1 = meeting[0];
-    const person2 = meeting[1];
+    const person1Id = meeting[0];
+    const person2Id = meeting[1];
 
-    const pastMeetingPart = pastMeetingsPerPerson[person1].filter(person => person === person2)
+    const pastMeetingPart = pastMeetingsPerPerson[person1Id].filter(person => person === person2Id)
       .length;
 
-    const blockListPart = getBlockListScore(person1, person2, participants);
+    // TODO change to part a
+    const typeAScore = getTypeAScore(person1Id, person2Id, participants);
+
+    // TODO change to part b
+    // const blockListPart = getBlockListScore(person1Id, person2Id, participants);
 
     const randomPart = Math.random();
 
-    const score = pastMeetingPart + blockListPart + randomPart;
+    const score = pastMeetingPart + typeAScore + randomPart;
 
+    Logger.log([meeting, score]);
     return [meeting, score];
   });
 
@@ -74,22 +93,22 @@ export default function generateMeetings() {
   const participants = readParticipants();
   const pastMeetings = readMeetings();
 
-  const rowPersonIds = participants.map(participant => participant.email);
+  const allParticipantIds = Object.keys(participants);
 
   const pastMeetingsPerPerson = {};
 
-  rowPersonIds.forEach(rowPersonId => {
-    const pastMeetingsOfRowPerson = pastMeetings.filter(meeting => {
-      return meeting.indexOf(rowPersonId) !== -1;
+  allParticipantIds.forEach(singleParticipantId => {
+    const pastMeetingsOfParticipant = pastMeetings.filter(meeting => {
+      return meeting.indexOf(singleParticipantId) !== -1;
     });
-    const pastMeetingsOfRowPersonCleaned = flatten(pastMeetingsOfRowPerson).filter(
-      person => person !== rowPersonId
+    const pastMeetingsOfParticipantCleaned = flatten(pastMeetingsOfParticipant).filter(
+      personId => personId !== singleParticipantId
     );
 
-    pastMeetingsPerPerson[rowPersonId] = pastMeetingsOfRowPersonCleaned;
+    pastMeetingsPerPerson[singleParticipantId] = pastMeetingsOfParticipantCleaned;
   });
 
-  const allPossibleMeetings = generatePossibleMeetings(rowPersonIds);
+  const allPossibleMeetings = generatePossibleMeetings(allParticipantIds);
 
   const possibleMeetingsScored = getScoredMeetings(
     allPossibleMeetings,
