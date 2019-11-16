@@ -17,7 +17,7 @@ https://github.com/labnol/apps-script-starter
 First clone the repo and run npm install.
 
 ```
-git clone https://github.com/Oulander/lottery-lunch lottery-lunch
+git clone https://github.com/Oulander/lottery-lunch lottery-lunch-<INSERT ORGANIZATION NAME>
 cd lottery-lunch
 npm install
 ```
