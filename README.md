@@ -1,8 +1,24 @@
 # Lottery lunch pairing generator
 
-## Installation
+## Usage instructions
 
-### Google environment
+TODO: Instructions to use the tool without setting up the development environment
+
+## Development instructions
+
+You can customize the tool to suit your needs locally with JavaScript.
+
+The development environment is based on Amit Agarwal's awesome Apps Script starter kit.
+For more info:
+https://github.com/labnol/apps-script-starter
+
+### Requirements
+
+- Node
+- Text editor of your choice. VScode at least does a good job
+  with syntax highlighting, autocorrection etc.
+
+### Check that you have the required spreadsheet and form.
 
 Read instructions.pdf and copy initial form to your drive from [this link.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
 
@@ -12,29 +28,17 @@ Make sure that
 - there is a `Form responses 1` sheet in the spreadsheet (or whatever that is in the language of your Google Apps)
 - `Form responses 1` is the first sheet of the spreadsheet
 
-### Development environment
+### Get the source code
 
-TODO: Create config file that has all stuff that is specific for a single instance of this project.
-
-Based on Amit Agarwal's awesome Apps Script starter kit.
-For more info:
-https://github.com/labnol/apps-script-starter
-
-First clone the repo and run npm install.
+Clone the repo and run npm install.
 
 ```
-git clone https://github.com/Oulander/lottery-lunch lottery-lunch-<INSERT ORGANIZATION NAME>
+git clone https://github.com/Oulander/lottery-lunch lottery-lunch
 cd lottery-lunch
 npm install
 ```
 
-Login to Google
-
-```
-npx clasp login
-```
-
-Enable script API
+### Enable script API and link the spreadsheet to your local code
 
 ```
 Go to script.google.com --> settings, enable Google Apps Script API from settings
@@ -54,6 +58,8 @@ Add your script id to the `example.clasp.json` -file, and remove the `example` -
   "rootDir": "./dist",
 }
 ```
+
+### Build and upload your code
 
 Build your code and check that the ./dist folder got populated
 
@@ -82,6 +88,12 @@ Entrypoint main = code-3.4.1.js
 [5] ./src/read-and-write-spreadsheets.js 2.87 KiB {0} [built]
 [6] ./src/send-emails.js 4.19 KiB {0} [built]
     + 1 hidden module
+```
+
+Login to Google with Clasp to allow pushing code to the spreadsheet from the command line
+
+```
+npx clasp login
 ```
 
 Push the code to your spreadsheet
