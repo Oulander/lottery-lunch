@@ -2,11 +2,9 @@
 
 ## Installation
 
-### Google sheet
+### Google environment
 
-Create a google sheet (you can link a google form to it later)
-
-TODO: An example spreadsheet with mock data.
+Read instructions.pdf and copy initial form to your drive from [this link.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
 
 ### Development environment
 
