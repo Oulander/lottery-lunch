@@ -1,7 +1,12 @@
 const meetingSheetName = 'meetings';
 const responseSheetName = 'Form Responses 1';
+const optionalTypes = {
+  typeA: '{type: A}',
+  typeB: '{type: B}',
+  typeC: '{type: C}'
+};
 
-function parseParticipantRow(row) {
+function parseParticipantRow(participantData, columnHeaders) {
   const lastUpdatedColumn = 0;
   const emailColumn = 1;
   const isInactiveColumn = 2; // subscription field
@@ -13,21 +18,49 @@ function parseParticipantRow(row) {
   // const telegramColumn = 6;
   const blockListColumn = 8;
 
-  const firstName = row[firstNameColumn] ? row[firstNameColumn].trim() : '';
-  const lastName = row[lastNameColumn] ? row[lastNameColumn].trim() : '';
+  const firstName = participantData[firstNameColumn] ? participantData[firstNameColumn].trim() : '';
+  const lastName = participantData[lastNameColumn] ? participantData[lastNameColumn].trim() : '';
 
   const fullName = `${firstName} ${lastName}`;
 
+  /**
+   * Function which maps contact information (type: C) and optional conditions
+   * for pair matching (type: A, type: B)
+   * @returns {object} optional participant information
+   */
+  const assignOptionalValues = () => {
+    const optionalValues = { typeA: {}, typeB: {}, typeC: {} };
+    columnHeaders.forEach((curr, i) => {
+      if (curr.indexOf(optionalTypes.typeA) > -1) {
+        const key = `typeA_${i}`;
+        optionalValues.typeA[key] = participantData[i] ? participantData[i] : '';
+      }
+      // TODO: TYPE B
+      // if (curr.indexOf(optionalTypes.typeC) > -1) {
+      //   const key = curr.replace(optionalTypes.typeC, '').replace(/[^0-9a-z]/gi, '');
+      //   optionalValues.typeC[key] = participantData[i] ? participantData[i] : '';
+      // }
+      if (curr.indexOf(optionalTypes.typeC) > -1) {
+        const key = curr.replace(optionalTypes.typeC, '').replace(/[^0-9a-z]/gi, '');
+        optionalValues.typeC[key] = participantData[i] ? participantData[i] : '';
+      }
+    });
+    return optionalValues;
+  };
+
   const participant = {
-    lastUpdated: row[lastUpdatedColumn],
+    lastUpdated: participantData[lastUpdatedColumn],
     firstName,
     lastName,
     fullName,
-    phone: row[phoneColumn],
-    email: row[emailColumn].trim().toLowerCase(),
-    blockList: row[blockListColumn].split(',').map(name => name.trim()),
-    isActive: row[isInactiveColumn] === 'Subscribe'
+    phone: participantData[phoneColumn],
+    email: participantData[emailColumn].trim().toLowerCase(),
+    blockList: participantData[blockListColumn].split(',').map(name => name.trim()),
+    isActive: participantData[isInactiveColumn] === 'Subscribe',
+    optionalTypeValues: assignOptionalValues()
   };
+
+  Logger.log(participant);
 
   return participant;
 }
@@ -52,14 +85,17 @@ function pickLatestParticipantDatapoint(participants) {
 export function readParticipants() {
   const responseSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(responseSheetName);
 
-  const participantRawData = responseSheet
+  const sheetRawData = responseSheet
     .getRange(1, 1, responseSheet.getLastRow(), responseSheet.getLastColumn())
     .getValues();
 
   Logger.log('rawdata');
-  Logger.log(participantRawData);
+  Logger.log(sheetRawData);
 
-  const parsedParticipants = participantRawData.map(row => parseParticipantRow(row));
+  const columnHeaderRow = sheetRawData[0];
+  const participantRows = sheetRawData.slice(1);
+
+  const parsedParticipants = participantRows.map(row => parseParticipantRow(row, columnHeaderRow));
 
   const participantsArray = pickLatestParticipantDatapoint(parsedParticipants);
 
