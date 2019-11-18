@@ -7,22 +7,51 @@ const optionalTypes = {
   typeC: '{type: C}'
 };
 
+// convert spreadsheet column letter to number starting from 1
+function letterToColumn(letter) {
+  let column = 0;
+  const { length } = letter;
+  for (let i = 0; i < length; i += 1) {
+    column += (letter.charCodeAt(i) - 64) * 26 ** (length - i - 1);
+  }
+  return column - 1;
+}
+
 function parseParticipantRow(participantData, columnHeaders) {
   const lastUpdatedColumn = 0;
   const emailColumn = 1;
-  const isInactiveColumn = 2; // subscription field
+  const subscriptionColumn = 2; // subscription field
   const firstNameColumn = 3;
   const lastNameColumn = 4;
+
   // optional columns -->
   const phoneColumn = 5;
   // const telegramColumn = 6;
   // const telegramColumn = 6;
-  const blockListColumn = 8;
+  // const blockListColumn = 8;
 
   const firstName = participantData[firstNameColumn] ? participantData[firstNameColumn].trim() : '';
   const lastName = participantData[lastNameColumn] ? participantData[lastNameColumn].trim() : '';
 
   const fullName = `${firstName} ${lastName}`;
+
+  const getTypeBValues = (columnHeader, i) => {
+    const columnLetters = columnHeader
+      .split('{type: B}')[1]
+      .replace(/[^0-9a-z]/gi, '')
+      .split('');
+    const [first, second] = columnLetters;
+    const col1 = first ? letterToColumn(first) : '';
+    const col2 = second ? letterToColumn(second) : '';
+    const str1 = col1 ? participantData[col1] : '';
+    const str2 = col2 ? participantData[col2] : '';
+    const merged = `${str1}${str2}`.toLowerCase();
+
+    return `${participantData[i]}|${merged}`
+      .toLowerCase()
+      .split(' ')
+      .join('');
+  };
 
   /**
    * Function which maps contact information (type: C) and optional conditions
@@ -36,11 +65,11 @@ function parseParticipantRow(participantData, columnHeaders) {
         const key = `typeA_${i}`;
         optionalValues.typeA[key] = participantData[i] ? participantData[i] : '';
       }
-      // TODO: TYPE B
-      // if (curr.indexOf(optionalTypes.typeC) > -1) {
-      //   const key = curr.replace(optionalTypes.typeC, '').replace(/[^0-9a-z]/gi, '');
-      //   optionalValues.typeC[key] = participantData[i] ? participantData[i] : '';
-      // }
+      if (curr.indexOf(optionalTypes.typeB) > -1) {
+        const key = `typeB_${i}`;
+        const value = getTypeBValues(curr, i);
+        optionalValues.typeB[key] = value;
+      }
       if (curr.indexOf(optionalTypes.typeC) > -1) {
         const key = curr.replace(optionalTypes.typeC, '').replace(/[^0-9a-z]/gi, '');
         optionalValues.typeC[key] = participantData[i] ? participantData[i] : '';
@@ -56,12 +85,10 @@ function parseParticipantRow(participantData, columnHeaders) {
     fullName,
     phone: participantData[phoneColumn],
     email: participantData[emailColumn].trim().toLowerCase(),
-    blockList: participantData[blockListColumn].split(',').map(name => name.trim()),
-    isActive: participantData[isInactiveColumn] === 'Subscribe',
+    // blockList: participantData[blockListColumn].split(',').map(name => name.trim()),
+    isActive: participantData[subscriptionColumn] === 'Subscribe',
     optionalTypeValues: assignOptionalValues()
   };
-
-  // Logger.log(participant);
 
   return participant;
 }

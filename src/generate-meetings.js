@@ -12,29 +12,36 @@ function generatePossibleMeetings(list) {
   return pairs;
 }
 
-// function getBlockListScore(person1Id, person2Id, participants) {
-//   const person1 = participants.filter(participant => participant.email === person1Id)[0];
-//   const person2 = participants.filter(participant => participant.email === person2Id)[0];
-
-//   const person2InPerson1sList =
-//     person1.blockList.map(name => name.toLowerCase()).indexOf(person2.fullName.toLowerCase()) !==
-//     -1;
-
-//   const person1InPerson2sList =
-//     person2.blockList.map(name => name.toLowerCase()).indexOf(person1.fullName.toLowerCase()) !==
-//     -1;
-
-//   return person2InPerson1sList || person1InPerson2sList ? 5 : 0;
-// }
-
-function getTypeAScore(person1Id, person2Id, participants) {
-  const p1TypeAObj = participants[person1Id].optionalTypeValues.typeA;
-  const p2TypeAObj = participants[person2Id].optionalTypeValues.typeA;
+function getTypeAScore(person1, person2) {
+  const p1TypeAObj = person1.optionalTypeValues.typeA;
+  const p2TypeAObj = person2.optionalTypeValues.typeA;
 
   const score = Object.keys(p1TypeAObj).reduce((total, curr) => {
     if (p1TypeAObj[curr] === p2TypeAObj[curr]) {
       return total + 5;
     }
+    return total;
+  }, 0);
+
+  return score;
+}
+
+// typeB={typeB_8=trimmed|merged}
+function getTypeBScore(person1, person2) {
+  const p1TypeBObj = person1.optionalTypeValues.typeB;
+  const p2TypeBObj = person2.optionalTypeValues.typeB;
+
+  const score = Object.keys(p1TypeBObj).reduce((total, curr) => {
+    const p1ExclusionData = p1TypeBObj[curr].split('|');
+    const p2ExclusionData = p2TypeBObj[curr].split('|');
+
+    if (
+      p1ExclusionData[0].indexOf(p2ExclusionData[1]) > -1 ||
+      p2ExclusionData[0].indexOf(p1ExclusionData[1]) > -1
+    ) {
+      return total + 20;
+    }
+
     return total;
   }, 0);
 
@@ -48,18 +55,15 @@ function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participa
     const person2Id = meeting[1];
 
     const pastMeetingsScore =
-      pastMeetingsPerPerson[person1Id].filter(person => person === person2Id).length * 5;
+      pastMeetingsPerPerson[person1Id].filter(person => person === person2Id).length * 10;
 
-    const typeAScore = getTypeAScore(person1Id, person2Id, participants);
-
-    // TODO change to part b
-    // const blockListPart = getBlockListScore(person1Id, person2Id, participants);
-
+    const typeAScore = getTypeAScore(participants[person1Id], participants[person2Id]);
+    const typeBScore = getTypeBScore(participants[person1Id], participants[person2Id]);
     const randomPart = Math.random();
-    const score = pastMeetingsScore + typeAScore + randomPart;
+    const score = pastMeetingsScore + typeAScore + typeBScore + randomPart;
 
     meetingsLog.push(
-      `[${meeting}]: pastMeetingsScore=${pastMeetingsScore}, typeAScore=${typeAScore}, randomPart=${randomPart}`
+      `[${meeting}]: pastMeetingsScore=${pastMeetingsScore}, typeAScore=${typeAScore}, typeBScore=${typeBScore}, randomPart=${randomPart}`
     );
 
     return [meeting, score];
@@ -95,9 +99,7 @@ function chooseMeetingsBasedOnScore(possibleMeetingsScored) {
 export default function generateMeetings() {
   const participants = readParticipants();
   const pastMeetings = readMeetings();
-
   const allParticipantIds = Object.keys(participants);
-
   const pastMeetingsPerPerson = {};
 
   allParticipantIds.forEach(singleParticipantId => {
