@@ -4,7 +4,7 @@ const settingsSheetName = 'settings';
 const optionalTypes = {
   typeA: '{type: A}',
   typeB: '{type: B}',
-  typeC: '{type: C}'
+  typeContact: '{type: contact}'
 };
 
 // convert spreadsheet column letter to number starting from 1
@@ -59,7 +59,7 @@ function parseParticipantRow(participantData, columnHeaders) {
    * @returns {object} optional participant information
    */
   const assignOptionalValues = () => {
-    const optionalValues = { typeA: {}, typeB: {}, typeC: {} };
+    const optionalValues = { typeA: {}, typeB: {}, typeContact: {} };
     columnHeaders.forEach((curr, i) => {
       if (curr.indexOf(optionalTypes.typeA) > -1) {
         const key = `typeA_${i}`;
@@ -70,9 +70,9 @@ function parseParticipantRow(participantData, columnHeaders) {
         const value = getTypeBValues(curr, i);
         optionalValues.typeB[key] = value;
       }
-      if (curr.indexOf(optionalTypes.typeC) > -1) {
-        const key = curr.replace(optionalTypes.typeC, '').replace(/[^0-9a-z]/gi, '');
-        optionalValues.typeC[key] = participantData[i] ? participantData[i] : '';
+      if (curr.indexOf(optionalTypes.typeContact) > -1) {
+        const key = curr.replace(optionalTypes.typeContact, '').replace(/[^0-9a-z]/gi, '');
+        optionalValues.typeContact[key] = participantData[i] ? participantData[i] : '';
       }
     });
     return optionalValues;
@@ -176,7 +176,6 @@ export function writeEmailSent(row, stringToWrite) {
 
 export function readSettings() {
   const settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(settingsSheetName);
-
   const settingsRaw = settingsSheet.getRange(2, 2, 4, 1).getValues();
 
   const settings = {

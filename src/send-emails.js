@@ -1,4 +1,4 @@
-import { keyBy } from 'lodash.keyby';
+// import { keyBy } from 'lodash.keyby';
 import {
   readMeetings,
   readSettings,
@@ -8,36 +8,32 @@ import {
 
 function generateContactDetails(person1, person2) {
   function detailsForSinglePerson(person) {
-    const contacts = {};
-    contacts.Email = person.email;
-    const additionalContacts = person.optionalTypeValues.typeC;
-    const additionalContactFields = Object.keys(additionalContacts);
-    additionalContactFields.forEach(field => {
-      contacts[field] = additionalContacts[field];
-    });
-    return contacts;
+    const additionalContactDetails = person.optionalTypeValues.typeContact;
+    additionalContactDetails.Email = person.email;
+
+    return additionalContactDetails;
   }
 
   const person1Details = detailsForSinglePerson(person1);
-  const person2Details = detailsForSinglePerson(person1);
+  const person2Details = detailsForSinglePerson(person2);
 
   function formatContactDetails(details) {
-    const fields = Object.keys(details);
-    const formattedDetails = '';
-    fields.forEach(field => {
-      const formattedRow = `<br/><b>${field}</b>: ${details[field]}`;
-      formattedDetails.concat(formattedRow);
+    const formattedDetailsArr = [];
+    Object.keys(details).forEach(field => {
+      formattedDetailsArr.push(`<b>${field}</b>: ${details[field]}`);
     });
+
+    return formattedDetailsArr.join('<br>');
   }
 
   const person1Formatted = formatContactDetails(person1Details);
   const person2Formatted = formatContactDetails(person2Details);
 
   const combinedDetails = `
-    <p>${person1.fullName}:
+    <p>${person1.fullName}: <br>
       ${person1Formatted}
     </p>
-    <p>${person2.fullName}:
+    <p>${person2.fullName}:  <br>
     ${person2Formatted}
     </p>
   `;
@@ -76,10 +72,8 @@ function generateEmailContent(person1, person2, settings) {
 }
 
 export default function sendEmails() {
-  const participants = keyBy(readParticipants(), 'email');
-
+  const participants = readParticipants();
   const meetings = readMeetings();
-
   const settings = readSettings();
 
   const quotaErrorMessage = `Your email send quota is full, try again tomorrow or have another person run the 'Send emails' script!`;
@@ -114,7 +108,7 @@ export default function sendEmails() {
         ...basicOptions
       };
 
-      // Logger.log(htmlBody);
+      Logger.log(htmlBody);
 
       if (false) {
         const emailQuotaRemaining = MailApp.getRemainingDailyQuota();
