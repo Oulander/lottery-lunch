@@ -88,7 +88,7 @@ function getSubscribedParticipants(participants) {
     if (subscribeTime < unsubscribeTime) delete subscribedDatapoints[key];
   });
 
-  Logger.log(`getSubscribedParticipants() returns: ${Object.keys(subscribedDatapoints)}\n`);
+  Logger.log(`getSubscribedParticipants() LOG:\n${Object.keys(subscribedDatapoints)}\n`);
 
   return subscribedDatapoints;
 }

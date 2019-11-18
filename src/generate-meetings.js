@@ -42,26 +42,30 @@ function getTypeAScore(person1Id, person2Id, participants) {
 }
 
 function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participants) {
+  const meetingsLog = [];
   const possibleMeetingsScored = allPossibleMeetings.map(meeting => {
     const person1Id = meeting[0];
     const person2Id = meeting[1];
 
-    const pastMeetingPart = pastMeetingsPerPerson[person1Id].filter(person => person === person2Id)
-      .length;
+    const pastMeetingsScore =
+      pastMeetingsPerPerson[person1Id].filter(person => person === person2Id).length * 5;
 
-    // TODO change to part a
     const typeAScore = getTypeAScore(person1Id, person2Id, participants);
 
     // TODO change to part b
     // const blockListPart = getBlockListScore(person1Id, person2Id, participants);
 
     const randomPart = Math.random();
+    const score = pastMeetingsScore + typeAScore + randomPart;
 
-    const score = pastMeetingPart + typeAScore + randomPart;
+    meetingsLog.push(
+      `[${meeting}]: pastMeetingsScore=${pastMeetingsScore}, typeAScore=${typeAScore}, randomPart=${randomPart}`
+    );
 
-    // Logger.log([meeting, score]);
     return [meeting, score];
   });
+
+  Logger.log(`getScoredMeetings() LOG:\n${meetingsLog.join('\n')}`);
 
   return possibleMeetingsScored;
 }
