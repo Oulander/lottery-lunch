@@ -7,34 +7,31 @@ import {
 } from './read-and-write-spreadsheets';
 
 function generateContactDetails(person1, person2) {
-  function detailsForSinglePerson(person) {
-    const additionalContactDetails = person.optionalTypeValues.typeContact;
-    additionalContactDetails.Email = person.email;
-
-    return additionalContactDetails;
-  }
-
-  const person1Details = detailsForSinglePerson(person1);
-  const person2Details = detailsForSinglePerson(person2);
+  const person1Details = { Email: person1.email, ...person1.optionalTypeValues.typeContact };
+  const person2Details = { Email: person2.email, ...person2.optionalTypeValues.typeContact };
 
   function formatContactDetails(details) {
     const formattedDetailsArr = [];
     Object.keys(details).forEach(field => {
-      formattedDetailsArr.push(`<b>${field}</b>: ${details[field]}`);
+      formattedDetailsArr.push(`<li><b>${field}</b>: ${details[field]}</li>`);
     });
 
-    return formattedDetailsArr.join('<br>');
+    return formattedDetailsArr.join('');
   }
 
   const person1Formatted = formatContactDetails(person1Details);
   const person2Formatted = formatContactDetails(person2Details);
 
   const combinedDetails = `
-    <p>${person1.fullName}: <br>
-      ${person1Formatted}
+    <p><b>${person1.fullName}</b>:
+      <ul>
+        ${person1Formatted}
+      </ul>
     </p>
-    <p>${person2.fullName}:  <br>
-    ${person2Formatted}
+    <p><b>${person2.fullName}</b>:
+      <ul>
+        ${person2Formatted}
+      </ul>
     </p>
   `;
 
@@ -110,11 +107,11 @@ export default function sendEmails() {
 
       Logger.log(htmlBody);
 
-      if (false) {
+      if (true) {
         const emailQuotaRemaining = MailApp.getRemainingDailyQuota();
         if (emailQuotaRemaining >= 2) {
           GmailApp.sendEmail(person1email, subject, '', options1);
-          if (false) {
+          if (true) {
             GmailApp.sendEmail(person2email, subject, '', options2);
           }
           const timestamp = new Date().toString();
