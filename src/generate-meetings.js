@@ -1,4 +1,3 @@
-import { flatten } from 'lodash.flatten';
 import { readParticipants, readMeetings, writeMeetings } from './read-and-write-spreadsheets';
 
 function generatePossibleMeetings(list) {
@@ -60,7 +59,7 @@ function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participa
 
     const score = pastMeetingPart + typeAScore + randomPart;
 
-    Logger.log([meeting, score]);
+    // Logger.log([meeting, score]);
     return [meeting, score];
   });
 
@@ -99,11 +98,12 @@ export default function generateMeetings() {
 
   allParticipantIds.forEach(singleParticipantId => {
     const pastMeetingsOfParticipant = pastMeetings.filter(meeting => {
-      return meeting.indexOf(singleParticipantId) !== -1;
+      return meeting.indexOf(singleParticipantId) > -1;
     });
-    const pastMeetingsOfParticipantCleaned = flatten(pastMeetingsOfParticipant).filter(
-      personId => personId !== singleParticipantId
-    );
+
+    const pastMeetingsOfParticipantCleaned = []
+      .concat(...pastMeetingsOfParticipant)
+      .filter(id => id !== singleParticipantId);
 
     pastMeetingsPerPerson[singleParticipantId] = pastMeetingsOfParticipantCleaned;
   });

@@ -1,5 +1,3 @@
-import { pickBy } from 'lodash.pickby';
-
 const meetingSheetName = 'meetings';
 const responseSheetName = 'Form Responses 1';
 const settingsSheetName = 'settings';
@@ -63,24 +61,36 @@ function parseParticipantRow(participantData, columnHeaders) {
     optionalTypeValues: assignOptionalValues()
   };
 
-  Logger.log(participant);
+  // Logger.log(participant);
 
   return participant;
 }
 
-function pickLatestParticipantDatapoint(participants) {
-  const participantsToKeep = {};
+function getSubscribedParticipants(participants) {
+  const subscribedDatapoints = {};
+  const unsubscribedDatapoints = {};
 
-  participants.forEach(participant => {
-    if (participant.email.length > 0) {
-      participantsToKeep[participant.email] = participant;
+  participants.forEach(p => {
+    if (p.isActive) {
+      subscribedDatapoints[p.email] = p;
+    } else {
+      unsubscribedDatapoints[p.email] = p;
     }
   });
-  Logger.log(participantsToKeep);
 
-  const subscribedParticipants = pickBy(participantsToKeep, participant => participant.isActive);
+  //  delete participants if they have later unsubscription time
+  Object.keys(unsubscribedDatapoints).forEach(key => {
+    const unsubscribeTime = new Date(unsubscribedDatapoints[key].lastUpdated).getTime();
+    const subscribeTime = subscribedDatapoints[key]
+      ? new Date(subscribedDatapoints[key].lastUpdated)
+      : 0;
 
-  return subscribedParticipants;
+    if (subscribeTime < unsubscribeTime) delete subscribedDatapoints[key];
+  });
+
+  Logger.log(`getSubscribedParticipants() returns: ${Object.keys(subscribedDatapoints)}\n`);
+
+  return subscribedDatapoints;
 }
 
 export function readParticipants() {
@@ -93,7 +103,7 @@ export function readParticipants() {
   const columnHeaderRow = sheetRawData[0];
   const participantRows = sheetRawData.slice(1);
   const parsedParticipants = participantRows.map(row => parseParticipantRow(row, columnHeaderRow));
-  const participantsObject = pickLatestParticipantDatapoint(parsedParticipants);
+  const participantsObject = getSubscribedParticipants(parsedParticipants);
 
   return participantsObject;
 }

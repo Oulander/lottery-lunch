@@ -1,4 +1,4 @@
-import { keyBy } from 'lodash';
+import { keyBy } from 'lodash.keyby';
 import {
   readMeetings,
   readSettings,
@@ -114,7 +114,7 @@ export default function sendEmails() {
         ...basicOptions
       };
 
-      Logger.log(htmlBody);
+      // Logger.log(htmlBody);
 
       if (false) {
         const emailQuotaRemaining = MailApp.getRemainingDailyQuota();
