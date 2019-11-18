@@ -74,6 +74,7 @@ export default function sendEmails() {
   const settings = readSettings();
 
   const quotaErrorMessage = `Your email send quota is full, try again tomorrow or have another person run the 'Send emails' script!`;
+  const sentEmailsLog = [];
 
   for (let i = 0; i < meetings.length; i += 1) {
     const currentMeeting = meetings[i];
@@ -105,8 +106,6 @@ export default function sendEmails() {
         ...basicOptions
       };
 
-      Logger.log(htmlBody);
-
       if (true) {
         const emailQuotaRemaining = MailApp.getRemainingDailyQuota();
         if (emailQuotaRemaining >= 2) {
@@ -116,10 +115,12 @@ export default function sendEmails() {
           }
           const timestamp = new Date().toString();
           writeEmailSent(i + 2, timestamp);
+          sentEmailsLog.push(`[${person1email}, ${person2email}]`);
         } else {
           writeEmailSent(i + 2, quotaErrorMessage);
         }
       }
     }
   }
+  Logger.log(`Emails sent succesfully: \n ${sentEmailsLog.join(', ')}`);
 }
