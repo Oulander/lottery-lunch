@@ -151,7 +151,11 @@ function dropOddPerson(participants) {
 
   const emails = Object.keys(participants);
 
-  const emailToDrop = leftOverPerson || emails[Math.floor(Math.random() * emails.length)];
+  const randomEmail = emails[Math.floor(Math.random() * emails.length)];
+
+  const emailToDrop = participants[leftOverPerson] !== undefined ? leftOverPerson : randomEmail;
+
+  Logger.log(`Uneven number of participants,  ${emailToDrop} will be dropped out of meetings.`);
 
   const { [emailToDrop]: _, ...rest } = participants;
 
@@ -160,10 +164,14 @@ function dropOddPerson(participants) {
 
 export default function generateMeetings() {
   const participantsUnfiltered = readParticipants();
+
+  const numberOfParticipants = Object.keys(participantsUnfiltered).length;
+
+  Logger.log(`Total ${numberOfParticipants} participants.`);
+
   const participants =
-    participantsUnfiltered.length % 2 === 0
-      ? participantsUnfiltered
-      : dropOddPerson(participantsUnfiltered);
+    numberOfParticipants % 2 === 0 ? participantsUnfiltered : dropOddPerson(participantsUnfiltered);
+
   const pastMeetings = readMeetings();
   const allParticipantIds = Object.keys(participants);
   const pastMeetingsPerPerson = {};
