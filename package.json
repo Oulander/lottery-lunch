@@ -24,8 +24,7 @@
     "apps-script"
   ],
   "dependencies": {
-    "core-js": "^2.6.5",
-    "lodash.keyby": "^4.6.0"
+    "core-js": "^2.6.5"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
