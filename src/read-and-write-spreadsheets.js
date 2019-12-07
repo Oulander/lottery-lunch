@@ -6,7 +6,7 @@ const typeBname = 'excludeThese';
 const typeContactName = 'contact';
 const optionalTypes = {
   typeA: `{type: ${typeAname}}`,
-  typeB: `{type: ${typeBname}}`,
+  typeB: `{type: ${typeBname}`,
   typeContact: `{type: ${typeContactName}}`
 };
 
@@ -34,12 +34,12 @@ function parseParticipantRow(participantData, columnHeaders) {
 
   const getTypeBValues = (columnHeader, i) => {
     const columnLetters = columnHeader
-      .split(optionalTypes.typeB)[1]
-      .match(/ *\{*[^}]*\} */g) // get content inside curly braces
-      .match(/ \(([^)]+)\) */g)[1] // get content inside braces
-      .split(',');
+      .match(/\{[^}]*\} */g)[0] // get content inside curly braces
+      .match(/\(([^)]+)\) */g)[0] // get content inside braces
+      .replace(/[^0-9a-z]/gi, '') // replace other special characters
+      .split('');
+
     const [first, second] = columnLetters;
-    Logger.log(columnLetters);
     const col1 = first ? parseColumnTypeLetterToNumber(first) : '';
     const col2 = second ? parseColumnTypeLetterToNumber(second) : '';
     const str1 = col1 ? participantData[col1] : '';
