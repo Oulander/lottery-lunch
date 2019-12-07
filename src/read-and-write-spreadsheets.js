@@ -35,9 +35,11 @@ function parseParticipantRow(participantData, columnHeaders) {
   const getTypeBValues = (columnHeader, i) => {
     const columnLetters = columnHeader
       .split(optionalTypes.typeB)[1]
-      .replace(/[^0-9a-z]/gi, '')
-      .split('');
+      .match(/ *\{*[^}]*\} */g) // get content inside curly braces
+      .match(/ \(([^)]+)\) */g)[1] // get content inside braces
+      .split(',');
     const [first, second] = columnLetters;
+    Logger.log(columnLetters);
     const col1 = first ? parseColumnTypeLetterToNumber(first) : '';
     const col2 = second ? parseColumnTypeLetterToNumber(second) : '';
     const str1 = col1 ? participantData[col1] : '';
@@ -70,7 +72,7 @@ function parseParticipantRow(participantData, columnHeaders) {
       if (curr.indexOf(optionalTypes.typeContact) > -1) {
         const key = curr
           .replace(optionalTypes.typeContact, '')
-          .replace(/ *\{[^)]*\} */g, '') // replace content inside curly braces
+          .replace(/ *\{[^}]*\} */g, '') // replace content inside curly braces
           .replace(/[^0-9a-z]/gi, ''); // replace other special characters
         optionalValues.typeContact[key] = participantData[i] ? participantData[i] : '';
       }
