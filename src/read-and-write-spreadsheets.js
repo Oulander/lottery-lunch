@@ -71,7 +71,10 @@ function parseParticipantRow(participantData, columnHeaders) {
         optionalValues.typeB[key] = value;
       }
       if (curr.indexOf(optionalTypes.typeContact) > -1) {
-        const key = curr.replace(optionalTypes.typeContact, '').replace(/[^0-9a-z]/gi, '');
+        const key = curr
+          .replace(optionalTypes.typeContact, '')
+          .replace(/ *\{[^)]*\} */g, '') // replace content inside curly braces
+          .replace(/[^0-9a-z]/gi, ''); // replace other special characters
         optionalValues.typeContact[key] = participantData[i] ? participantData[i] : '';
       }
     });
