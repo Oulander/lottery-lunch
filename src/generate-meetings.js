@@ -111,7 +111,7 @@ function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participa
     const score = pastMeetingsScore + typeAScore + typeBScore + randomScore;
 
     meetingsLog.push(
-      `[${meeting}]: pastMeetingsScore=${pastMeetingsScore}, typeAScore=${typeAScore}, typeBScore=${typeBScore}, randomPart=${randomScore}`
+      `[${meeting}]: totalScore=${score}, pastMeetingsScore=${pastMeetingsScore}, typeAScore=${typeAScore}, typeBScore=${typeBScore}, randomPart=${randomScore}`
     );
 
     return [meeting, score];
