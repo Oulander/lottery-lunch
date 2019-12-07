@@ -1,4 +1,9 @@
-import { readParticipants, readMeetings, writeMeetings } from './read-and-write-spreadsheets';
+import {
+  readParticipants,
+  readMeetings,
+  writeMeetings,
+  readSettings
+} from './read-and-write-spreadsheets';
 
 function generatePossibleMeetings(list) {
   const pairs = new Array((list.length * (list.length - 1)) / 2);
@@ -69,7 +74,7 @@ function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participa
     return [meeting, score];
   });
 
-  Logger.log(`getScoredMeetings() LOG:\n${meetingsLog.join('\n')}`);
+  // Logger.log(`getScoredMeetings() LOG:\n${meetingsLog.join('\n')}`);
 
   return possibleMeetingsScored;
 }
@@ -96,8 +101,26 @@ function chooseMeetingsBasedOnScore(possibleMeetingsScored) {
   return meetingsArray;
 }
 
+function dropOddPerson(participants) {
+  const settings = readSettings();
+
+  const { leftOverPerson } = settings;
+
+  const emails = Object.keys(participants);
+
+  const emailToDrop = leftOverPerson || emails[Math.floor(Math.random() * emails.length)];
+
+  const { [emailToDrop]: _, ...rest } = participants;
+
+  return rest;
+}
+
 export default function generateMeetings() {
-  const participants = readParticipants();
+  const participantsUnfiltered = readParticipants();
+  const participants =
+    participantsUnfiltered.length % 2 === 0
+      ? participantsUnfiltered
+      : dropOddPerson(participantsUnfiltered);
   const pastMeetings = readMeetings();
   const allParticipantIds = Object.keys(participants);
   const pastMeetingsPerPerson = {};
