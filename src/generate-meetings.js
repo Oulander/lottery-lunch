@@ -31,7 +31,6 @@ function getTypeAScore(person1, person2) {
   return score;
 }
 
-// typeB={typeB_8=trimmed|merged}
 function getTypeBScore(person1, person2) {
   const p1TypeBObj = person1.optionalTypeValues.typeB;
   const p2TypeBObj = person2.optionalTypeValues.typeB;
@@ -53,28 +52,72 @@ function getTypeBScore(person1, person2) {
   return score;
 }
 
+function getPastMeetingScore(person1Id, person2Id, pastMeetingsPerPerson) {
+  return pastMeetingsPerPerson[person1Id].filter(person => person === person2Id).length * 10;
+}
+
+function getRandomScore(person1Id, person2Id, pastMeetingsPerPerson, mostMeetingsPerPerson) {
+  const person1pastmeetings = pastMeetingsPerPerson[person1Id]
+    ? pastMeetingsPerPerson[person1Id].length * 1.0
+    : 0.0;
+  const person2pastmeetings = pastMeetingsPerPerson[person2Id]
+    ? pastMeetingsPerPerson[person2Id].length * 1.0
+    : 0.0;
+
+  if (
+    mostMeetingsPerPerson === 0 ||
+    (person1pastmeetings === mostMeetingsPerPerson && person2pastmeetings === mostMeetingsPerPerson)
+  ) {
+    return Math.random();
+  }
+
+  const person1meetingsPart = person1pastmeetings / (mostMeetingsPerPerson * 1.0);
+  const person2meetingsPart = person2pastmeetings / (mostMeetingsPerPerson * 1.0);
+
+  const combinedMeetingsPart = 1.0 - (person1meetingsPart + person2meetingsPart) / 2.0;
+
+  const random = Math.random() * combinedMeetingsPart;
+
+  const randomScore = (combinedMeetingsPart + random) / 2.0;
+
+  return randomScore;
+}
+
 function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participants) {
   const meetingsLog = [];
+
+  const pastMeetingPersonEmails = Object.keys(pastMeetingsPerPerson);
+
+  const meetingAmountsPerPerson = pastMeetingPersonEmails.map(email => {
+    return pastMeetingsPerPerson[email].length;
+  });
+
+  const mostMeetingsPerPerson = Math.max(...meetingAmountsPerPerson);
+
   const possibleMeetingsScored = allPossibleMeetings.map(meeting => {
     const person1Id = meeting[0];
     const person2Id = meeting[1];
 
-    const pastMeetingsScore =
-      pastMeetingsPerPerson[person1Id].filter(person => person === person2Id).length * 10;
-
+    const pastMeetingsScore = getPastMeetingScore(person1Id, person2Id, pastMeetingsPerPerson);
     const typeAScore = getTypeAScore(participants[person1Id], participants[person2Id]);
     const typeBScore = getTypeBScore(participants[person1Id], participants[person2Id]);
-    const randomPart = Math.random();
-    const score = pastMeetingsScore + typeAScore + typeBScore + randomPart;
+    const randomScore = getRandomScore(
+      person1Id,
+      person2Id,
+      pastMeetingsPerPerson,
+      mostMeetingsPerPerson
+    );
+
+    const score = pastMeetingsScore + typeAScore + typeBScore + randomScore;
 
     meetingsLog.push(
-      `[${meeting}]: pastMeetingsScore=${pastMeetingsScore}, typeAScore=${typeAScore}, typeBScore=${typeBScore}, randomPart=${randomPart}`
+      `[${meeting}]: pastMeetingsScore=${pastMeetingsScore}, typeAScore=${typeAScore}, typeBScore=${typeBScore}, randomPart=${randomScore}`
     );
 
     return [meeting, score];
   });
 
-  // Logger.log(`getScoredMeetings() LOG:\n${meetingsLog.join('\n')}`);
+  Logger.log(`getScoredMeetings() LOG:\n${meetingsLog.join('\n')}`);
 
   return possibleMeetingsScored;
 }
@@ -130,9 +173,9 @@ export default function generateMeetings() {
       return meeting.indexOf(singleParticipantId) > -1;
     });
 
-    const pastMeetingsOfParticipantCleaned = []
-      .concat(...pastMeetingsOfParticipant)
-      .filter(id => id !== singleParticipantId);
+    const pastMeetingsOfParticipantCleaned = [...pastMeetingsOfParticipant].filter(
+      id => id !== singleParticipantId
+    );
 
     pastMeetingsPerPerson[singleParticipantId] = pastMeetingsOfParticipantCleaned;
   });
@@ -145,23 +188,7 @@ export default function generateMeetings() {
     participants
   );
 
-  let meetingsArray = chooseMeetingsBasedOnScore(possibleMeetingsScored);
-
-  // The block below will try to re-score and re-pick the meetings five times
-  // if there's a meeting between people who have already met. This is not very efficient or
-  // elegant, but will get the job done as long as the number of people participating
-  // doesn't get too high. Should be rewritten if performance becomes an issue.
-  for (let i = 0; i < 5; i += 1) {
-    const meetingScores = meetingsArray.map(meeting => meeting[2]);
-    const highestScore = Math.max(...meetingScores);
-    if (highestScore > 1) {
-      meetingsArray = chooseMeetingsBasedOnScore(
-        getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participants)
-      );
-    } else {
-      break;
-    }
-  }
+  const meetingsArray = chooseMeetingsBasedOnScore(possibleMeetingsScored);
 
   const meetingsArrayWithResponsiblePersonShuffled = meetingsArray.map(meeting =>
     Math.random() >= 0.5 ? [meeting[0], meeting[1]] : [meeting[1], meeting[0]]
