@@ -1,14 +1,17 @@
 const meetingSheetName = 'meetings';
 const responseSheetName = 'Form Responses 1';
 const settingsSheetName = 'settings';
+const typeAname = 'excludeThis';
+const typeBname = 'excludeThese';
+const typeContactName = 'contact';
 const optionalTypes = {
-  typeA: '{type: A}',
-  typeB: '{type: B}',
-  typeContact: '{type: contact}'
+  typeA: `{type: ${typeAname}}`,
+  typeB: `{type: ${typeBname}}`,
+  typeContact: `{type: ${typeContactName}}`
 };
 
 // convert spreadsheet column letter to number starting from 1
-function letterToColumn(letter) {
+function parseColumnTypeLetterToNumber(letter) {
   let column = 0;
   const { length } = letter;
   for (let i = 0; i < length; i += 1) {
@@ -20,15 +23,9 @@ function letterToColumn(letter) {
 function parseParticipantRow(participantData, columnHeaders) {
   const lastUpdatedColumn = 0;
   const emailColumn = 1;
-  const subscriptionColumn = 2; // subscription field
+  const subscriptionColumn = 2;
   const firstNameColumn = 3;
   const lastNameColumn = 4;
-
-  // optional columns -->
-  const phoneColumn = 5;
-  // const telegramColumn = 6;
-  // const telegramColumn = 6;
-  // const blockListColumn = 8;
 
   const firstName = participantData[firstNameColumn] ? participantData[firstNameColumn].trim() : '';
   const lastName = participantData[lastNameColumn] ? participantData[lastNameColumn].trim() : '';
@@ -37,12 +34,12 @@ function parseParticipantRow(participantData, columnHeaders) {
 
   const getTypeBValues = (columnHeader, i) => {
     const columnLetters = columnHeader
-      .split('{type: B}')[1]
+      .split(optionalTypes.typeB)[1]
       .replace(/[^0-9a-z]/gi, '')
       .split('');
     const [first, second] = columnLetters;
-    const col1 = first ? letterToColumn(first) : '';
-    const col2 = second ? letterToColumn(second) : '';
+    const col1 = first ? parseColumnTypeLetterToNumber(first) : '';
+    const col2 = second ? parseColumnTypeLetterToNumber(second) : '';
     const str1 = col1 ? participantData[col1] : '';
     const str2 = col2 ? participantData[col2] : '';
     const merged = `${str1}${str2}`.toLowerCase();
@@ -62,11 +59,11 @@ function parseParticipantRow(participantData, columnHeaders) {
     const optionalValues = { typeA: {}, typeB: {}, typeContact: {} };
     columnHeaders.forEach((curr, i) => {
       if (curr.indexOf(optionalTypes.typeA) > -1) {
-        const key = `typeA_${i}`;
+        const key = `${typeAname}_${i}`;
         optionalValues.typeA[key] = participantData[i] ? participantData[i] : '';
       }
       if (curr.indexOf(optionalTypes.typeB) > -1) {
-        const key = `typeB_${i}`;
+        const key = `${typeBname}_${i}`;
         const value = getTypeBValues(curr, i);
         optionalValues.typeB[key] = value;
       }
@@ -86,9 +83,7 @@ function parseParticipantRow(participantData, columnHeaders) {
     firstName,
     lastName,
     fullName,
-    phone: participantData[phoneColumn],
     email: participantData[emailColumn].trim().toLowerCase(),
-    // blockList: participantData[blockListColumn].split(',').map(name => name.trim()),
     isActive: participantData[subscriptionColumn] === 'Subscribe',
     optionalTypeValues: assignOptionalValues()
   };

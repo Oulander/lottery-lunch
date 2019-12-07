@@ -110,7 +110,7 @@ The console output should look be similar to this
 └─ dist/code-3.4.1.js
 ```
 
-In the future you can combine the above steps with
+In the future, to build the code and push it to the spreadsheet, you can combine the the build and upload steps with
 
 ```
 npm run deploy
