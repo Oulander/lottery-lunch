@@ -12,7 +12,7 @@ function generateContactDetails(person1, person2) {
   function formatContactDetails(details) {
     const formattedDetailsArr = [];
     Object.keys(details).forEach(field => {
-      formattedDetailsArr.push(`<li><b>${field}</b>: ${details[field]}</li>`);
+      formattedDetailsArr.push(`<li>${field}: ${details[field]}</li>`);
     });
 
     return formattedDetailsArr.join('');
