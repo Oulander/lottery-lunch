@@ -5,9 +5,9 @@ const typeAname = 'excludeThis';
 const typeBname = 'excludeThese';
 const typeContactName = 'contact';
 const optionalTypes = {
-  typeA: `{type: ${typeAname}}`,
-  typeB: `{type: ${typeBname}`,
-  typeContact: `{type: ${typeContactName}}`
+  typeA: `{${typeAname}}`,
+  typeB: `{${typeBname}`,
+  typeContact: `{${typeContactName}}`
 };
 
 // convert spreadsheet column letter to number starting from 1
@@ -53,8 +53,8 @@ function parseParticipantRow(participantData, columnHeaders) {
   };
 
   /**
-   * Function which maps contact information (type: C) and optional conditions
-   * for pair matching (type: A, type: B)
+   * Function which maps contact information (type: contact) and optional conditions
+   * for pair matching (typeA, typeB)
    * @returns {object} optional participant information
    */
   const assignOptionalValues = () => {

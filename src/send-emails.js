@@ -105,19 +105,15 @@ export default function sendEmails() {
         ...basicOptions
       };
 
-      if (true) {
-        const emailQuotaRemaining = MailApp.getRemainingDailyQuota();
-        if (emailQuotaRemaining >= 2) {
-          GmailApp.sendEmail(person1email, subject, '', options1);
-          if (true) {
-            GmailApp.sendEmail(person2email, subject, '', options2);
-          }
-          const timestamp = new Date().toString();
-          writeEmailSent(i + 2, timestamp);
-          sentEmailsLog.push(`[${person1email}, ${person2email}]`);
-        } else {
-          writeEmailSent(i + 2, quotaErrorMessage);
-        }
+      const emailQuotaRemaining = MailApp.getRemainingDailyQuota();
+      if (emailQuotaRemaining >= 2) {
+        GmailApp.sendEmail(person1email, subject, '', options1);
+        GmailApp.sendEmail(person2email, subject, '', options2);
+        const timestamp = new Date().toString();
+        writeEmailSent(i + 2, timestamp);
+        sentEmailsLog.push(`[${person1email}, ${person2email}]`);
+      } else {
+        writeEmailSent(i + 2, quotaErrorMessage);
       }
     }
   }

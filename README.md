@@ -38,6 +38,8 @@ cd lottery-lunch
 npm install
 ```
 
+If you're using a fork and want to keep your version up to date with the main repo, use [these instructions.](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/syncing-a-fork)
+
 ### Enable script API and link the spreadsheet to your local code
 
 ```
