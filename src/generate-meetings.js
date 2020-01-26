@@ -43,7 +43,7 @@ function getTypeBScore(person1, person2) {
       p1ExclusionData[0].indexOf(p2ExclusionData[1]) > -1 ||
       p2ExclusionData[0].indexOf(p1ExclusionData[1]) > -1
     ) {
-      return total + 20;
+      return total + 10;
     }
 
     return total;
@@ -53,7 +53,9 @@ function getTypeBScore(person1, person2) {
 }
 
 function getPastMeetingScore(person1Id, person2Id, pastMeetingsPerPerson) {
-  return pastMeetingsPerPerson[person1Id].filter(person => person === person2Id).length * 10;
+  return (
+    pastMeetingsPerPerson[person1Id].filter(meeting => meeting.includes(person2Id)).length * 10
+  );
 }
 
 function getRandomScore(person1Id, person2Id, pastMeetingsPerPerson, mostMeetingsPerPerson) {
