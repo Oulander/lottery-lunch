@@ -5,9 +5,9 @@ const typeAname = 'excludeThis';
 const typeBname = 'excludeThese';
 const typeContactName = 'contact';
 const optionalTypes = {
-  typeA: `{type: ${typeAname}}`,
-  typeB: `{type: ${typeBname}`,
-  typeContact: `{type: ${typeContactName}}`
+  typeA: `{${typeAname}}`,
+  typeB: `{${typeBname}`,
+  typeContact: `{${typeContactName}}`
 };
 
 // convert spreadsheet column letter to number starting from 1
