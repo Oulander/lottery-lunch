@@ -45,7 +45,7 @@ Go to script.google.com --> settings, enable Google Apps Script API from setting
 ```
 
 Get the script id from the spreadsheet's script editor. You can find the
-script editor from the spreadsheet's toolbar at `Tools -> Script editor`.
+script editor from the spreadsheet's toolbar at `Tools -> Script editor`. If you're unable to open script editor make sure you are signed out of ALL other Google accounts. Then ONLY sign into the account that contains the Sheet's document.
 
 In the editor, go to `File -> Project properties` and give your project a name.
 You will find your `Script ID` under the `Info` tab.
