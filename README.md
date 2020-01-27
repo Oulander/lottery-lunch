@@ -2,7 +2,10 @@
 
 ## Usage instructions
 
-TODO: Instructions to use the tool without setting up the development environment
+TODO: Instructions to use the tool without setting up the development environment --> README in Google Drive Example
+
+Here's a template folder including necessary spreadsheet and form templates. Create a copy of them to your personal or organization's Google Drive:
+[Google Drive Example.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
 
 ## Development instructions
 

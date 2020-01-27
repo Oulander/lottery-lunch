@@ -70,7 +70,10 @@ function parseParticipantRow(participantData, columnHeaders) {
         optionalValues.typeB[key] = value;
       }
       if (curr.indexOf(optionalTypes.typeContact) > -1) {
-        const key = curr.replace(optionalTypes.typeContact, '').replace(/ *\{[^}]*\} */g, ''); // replace content inside curly braces
+        const key = curr
+          .replace(optionalTypes.typeContact, '')
+          .replace(/ *\{[^}]*\} */g, '') // replace content inside curly braces, necessary if {typeA} or {typeB} exclusions on same header
+          .trim();
         optionalValues.typeContact[key] = participantData[i] ? participantData[i] : '';
       }
     });
