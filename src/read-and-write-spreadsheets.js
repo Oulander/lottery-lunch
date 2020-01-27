@@ -163,7 +163,7 @@ export function writeMeetings(newMeetings) {
     meetingSheet.getLastRow() + 1,
     2,
     newMeetings.length,
-    2
+    3
   );
   rangeToWrite.setValues(newMeetings);
 }
