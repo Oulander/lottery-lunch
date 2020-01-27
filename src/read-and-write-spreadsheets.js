@@ -176,13 +176,15 @@ export function writeEmailSent(row, stringToWrite) {
 
 export function readSettings() {
   const settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(settingsSheetName);
-  const settingsRaw = settingsSheet.getRange(2, 2, 4, 1).getValues();
+  const settingsRaw = settingsSheet.getRange(2, 2, 6, 1).getValues();
 
   const settings = {
-    leftOverPerson: settingsRaw[0][0],
-    senderNameRaw: settingsRaw[1][0],
-    subjectRaw: settingsRaw[2][0],
-    htmlBodyRaw: settingsRaw[3][0]
+    typeAScore: settingsRaw[0][0] ? settingsRaw[0][0] : 5,
+    typeBScore: settingsRaw[1][0] ? settingsRaw[1][0] : 5,
+    leftOverPerson: settingsRaw[2][0],
+    senderNameRaw: settingsRaw[3][0],
+    subjectRaw: settingsRaw[4][0],
+    htmlBodyRaw: settingsRaw[5][0]
   };
 
   return settings;

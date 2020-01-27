@@ -5,6 +5,8 @@ import {
   readSettings
 } from './read-and-write-spreadsheets';
 
+const SETTINGS = readSettings();
+
 function generatePossibleMeetings(list) {
   const pairs = new Array((list.length * (list.length - 1)) / 2);
   let pos = 0;
@@ -21,35 +23,37 @@ function getTypeAScore(person1, person2) {
   const p1TypeAObj = person1.optionalTypeValues.typeA;
   const p2TypeAObj = person2.optionalTypeValues.typeA;
 
-  const score = Object.keys(p1TypeAObj).reduce((total, curr) => {
+  const totalTypeAScore = Object.keys(p1TypeAObj).reduce((total, curr) => {
+    const { typeAScore } = SETTINGS;
     if (p1TypeAObj[curr] === p2TypeAObj[curr]) {
-      return total + 5;
+      return total + typeAScore;
     }
     return total;
   }, 0);
 
-  return score;
+  return totalTypeAScore;
 }
 
 function getTypeBScore(person1, person2) {
   const p1TypeBObj = person1.optionalTypeValues.typeB;
   const p2TypeBObj = person2.optionalTypeValues.typeB;
 
-  const score = Object.keys(p1TypeBObj).reduce((total, curr) => {
+  const totalTypeBScore = Object.keys(p1TypeBObj).reduce((total, curr) => {
     const p1ExclusionData = p1TypeBObj[curr].split('|');
     const p2ExclusionData = p2TypeBObj[curr].split('|');
+    const { typeBScore } = SETTINGS;
 
     if (
       p1ExclusionData[0].indexOf(p2ExclusionData[1]) > -1 ||
       p2ExclusionData[0].indexOf(p1ExclusionData[1]) > -1
     ) {
-      return total + 10;
+      return total + typeBScore;
     }
 
     return total;
   }, 0);
 
-  return score;
+  return totalTypeBScore;
 }
 
 function getPastMeetingScore(person1Id, person2Id, pastMeetingsPerPerson) {
@@ -141,14 +145,9 @@ function chooseMeetingsBasedOnScore(possibleMeetingsScored) {
 }
 
 function dropOddPerson(participants) {
-  const settings = readSettings();
-
-  const { leftOverPerson } = settings;
-
+  const { leftOverPerson } = SETTINGS;
   const emails = Object.keys(participants);
-
   const randomEmail = emails[Math.floor(Math.random() * emails.length)];
-
   const emailToDrop = participants[leftOverPerson] !== undefined ? leftOverPerson : randomEmail;
 
   Logger.log(`Uneven number of participants,  ${emailToDrop} will be dropped out of meetings.`);
