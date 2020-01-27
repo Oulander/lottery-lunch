@@ -43,7 +43,7 @@ function getTypeBScore(person1, person2) {
       p1ExclusionData[0].indexOf(p2ExclusionData[1]) > -1 ||
       p2ExclusionData[0].indexOf(p1ExclusionData[1]) > -1
     ) {
-      return total + 20;
+      return total + 10;
     }
 
     return total;
@@ -53,7 +53,9 @@ function getTypeBScore(person1, person2) {
 }
 
 function getPastMeetingScore(person1Id, person2Id, pastMeetingsPerPerson) {
-  return pastMeetingsPerPerson[person1Id].filter(person => person === person2Id).length * 10;
+  return (
+    pastMeetingsPerPerson[person1Id].filter(meeting => meeting.includes(person2Id)).length * 10
+  );
 }
 
 function getRandomScore(person1Id, person2Id, pastMeetingsPerPerson, mostMeetingsPerPerson) {
@@ -84,8 +86,6 @@ function getRandomScore(person1Id, person2Id, pastMeetingsPerPerson, mostMeeting
 }
 
 function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participants) {
-  const meetingsLog = [];
-
   const pastMeetingPersonEmails = Object.keys(pastMeetingsPerPerson);
 
   const meetingAmountsPerPerson = pastMeetingPersonEmails.map(email => {
@@ -110,14 +110,8 @@ function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participa
 
     const score = pastMeetingsScore + typeAScore + typeBScore + randomScore;
 
-    meetingsLog.push(
-      `[${meeting}]: totalScore=${score}, pastMeetingsScore=${pastMeetingsScore}, typeAScore=${typeAScore}, typeBScore=${typeBScore}, randomPart=${randomScore}`
-    );
-
     return [meeting, score];
   });
-
-  Logger.log(`getScoredMeetings() LOG:\n${meetingsLog.join('\n')}`);
 
   return possibleMeetingsScored;
 }
@@ -134,13 +128,15 @@ function chooseMeetingsBasedOnScore(possibleMeetingsScored) {
     }
     const person1 = scoredSortedMeetings[i][0][0];
     const person2 = scoredSortedMeetings[i][0][1];
+    const score = scoredSortedMeetings[i][1];
 
     if (!meetingsThisRound[person1] && !meetingsThisRound[person2]) {
       meetingsThisRound[person1] = person2;
       meetingsThisRound[person2] = person1;
-      meetingsArray.push([person1, person2, scoredSortedMeetings[i][1]]);
+      meetingsArray.push([person1, person2, score]);
     }
   }
+
   return meetingsArray;
 }
 
@@ -199,7 +195,9 @@ export default function generateMeetings() {
   const meetingsArray = chooseMeetingsBasedOnScore(possibleMeetingsScored);
 
   const meetingsArrayWithResponsiblePersonShuffled = meetingsArray.map(meeting =>
-    Math.random() >= 0.5 ? [meeting[0], meeting[1]] : [meeting[1], meeting[0]]
+    Math.random() >= 0.5
+      ? [meeting[0], meeting[1], meeting[2]]
+      : [meeting[1], meeting[0], meeting[2]]
   );
 
   writeMeetings(meetingsArrayWithResponsiblePersonShuffled);
