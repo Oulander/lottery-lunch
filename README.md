@@ -95,7 +95,7 @@ Entrypoint main = code-3.4.1.js
     + 1 hidden module
 ```
 
-Login to Google with Clasp to allow pushing code to the spreadsheet from the command line
+Login to Google with Clasp to allow pushing code to the spreadsheet from the command line. Login with the account you will be using for the lottery lunch tool. It might be convenient to create a separate lottery lunch account, especially for organizational use.
 
 ```
 npx clasp login
