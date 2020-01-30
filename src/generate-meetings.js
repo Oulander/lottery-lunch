@@ -5,6 +5,8 @@ import {
   readSettings
 } from './read-and-write-spreadsheets';
 
+import writeScoredMeetingsLog from './write-logs';
+
 const SETTINGS = readSettings();
 
 function generatePossibleMeetings(list) {
@@ -91,6 +93,8 @@ function getRandomScore(person1Id, person2Id, pastMeetingsPerPerson, mostMeeting
 
 function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participants) {
   const pastMeetingPersonEmails = Object.keys(pastMeetingsPerPerson);
+  const timestamp = Utilities.formatDate(new Date(), 'GMT+1', 'dd/MM/yyyy');
+  const scoredMeetingsLogArr = [];
 
   const meetingAmountsPerPerson = pastMeetingPersonEmails.map(email => {
     return pastMeetingsPerPerson[email].length;
@@ -114,8 +118,21 @@ function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participa
 
     const score = pastMeetingsScore + typeAScore + typeBScore + randomScore;
 
+    scoredMeetingsLogArr.push([
+      timestamp,
+      person1Id,
+      person2Id,
+      score,
+      pastMeetingsScore,
+      typeAScore,
+      typeBScore,
+      randomScore
+    ]);
+
     return [meeting, score];
   });
+
+  writeScoredMeetingsLog(scoredMeetingsLogArr);
 
   return possibleMeetingsScored;
 }
