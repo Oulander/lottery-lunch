@@ -23,20 +23,21 @@ https://github.com/labnol/apps-script-starter
 
 ### Check that you have the required spreadsheet and form.
 
-Read instructions.pdf and copy initial form to your drive from [this link.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
+Copy initial form to your drive from [this link.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
 
 Make sure that
 
 - the form output points to the spreadsheet
 - there is a `Form responses 1` sheet in the spreadsheet
 - If your spreadsheet is in another language, rename the form response sheet to `Form responses 1`
+- Read the instructions / pairing logic from spreadsheet tab called `Column types README`
 
 ### Get the source code
 
-Clone the repo and run npm install.
+Clone this (or the original) repo and run npm install.
 
 ```
-git clone https://github.com/Oulander/lottery-lunch lottery-lunch
+git clone https://github.com/athenekilta/lottery-lunch.git
 cd lottery-lunch
 npm install
 ```
