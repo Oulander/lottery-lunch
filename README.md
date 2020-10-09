@@ -31,6 +31,7 @@ Make sure that
 - there is a `Form responses 1` sheet in the spreadsheet
 - If your spreadsheet is in another language, rename the form response sheet to `Form responses 1`
 - Read the instructions / pairing logic from spreadsheet tab called `Column types README`
+- Change all necessary info from the spreadsheet tab called `settings` 
 
 ### Get the source code
 
