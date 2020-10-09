@@ -2,10 +2,23 @@
 
 ## Usage instructions
 
-TODO: Instructions to use the tool without setting up the development environment --> README in Google Drive Example
+TODO: Detailed Instructions to use the tool without setting up the development environment --> README in Google Drive Example
 
 Here's a template folder including necessary spreadsheet and form templates. Create a copy of them to your personal or organization's Google Drive:
 [Google Drive Example.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
+
+Make sure that
+
+- the form output points to the spreadsheet
+- there is a `Form responses 1` sheet in the spreadsheet
+- If your spreadsheet is in another language, rename the form response sheet to `Form responses 1`
+- Read the instructions / pairing logic from spreadsheet tab called `Column types README`
+- Change all necessary info from the spreadsheet tab called `settings`
+
+Then, 
+1. Send the form to desired people
+2. Press `Genererate meetings` button from the spreadsheet's `Lottery Lunch Menu` (new meetings should appear to the meetings tab)
+3. If everything looks ok, send the mails by pressing `Send emails` button (emails are sent when a timestamps appear to the `meetings` tab
 
 ## Development instructions
 
@@ -23,7 +36,7 @@ https://github.com/labnol/apps-script-starter
 
 ### Check that you have the required spreadsheet and form.
 
-Copy initial form to your drive from [this link.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
+Copy initial form and spreadsheet to your drive from [this link.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
 
 Make sure that
 
