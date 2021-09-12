@@ -9,11 +9,11 @@ Here's a template folder including necessary spreadsheet and form templates. Cre
 
 Make sure that
 
-- the form output points to the spreadsheet
-- there is a `Form responses 1` sheet in the spreadsheet
+- the form output points to the spreadsheet. In detail, the form answers must point to a tab called `Form responses 1`
 - If your spreadsheet is in another language, rename the form response sheet to `Form responses 1`
 - Read the instructions / pairing logic from spreadsheet tab called `Column types README`
-- Change all necessary info from the spreadsheet tab called `settings`. Also, don't change the name of the `settings`tab.
+- Change all necessary info from the spreadsheet tab called `settings`. Also, don't change the name of the `settings` tab.
+- Don't change the name of the `meetings` tab.
 
 Then, 
 1. Send the form to desired people
