@@ -176,7 +176,7 @@ export function writeEmailSent(row, stringToWrite) {
 
 export function readSettings() {
   const settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(settingsSheetName);
-  const settingsRaw = settingsSheet.getRange(2, 2, 6, 1).getValues();
+  const settingsRaw = settingsSheet.getRange(2, 2, 7, 1).getValues();
 
   const settings = {
     typeAScore: settingsRaw[0][0] ? settingsRaw[0][0] : 5,
@@ -184,7 +184,8 @@ export function readSettings() {
     leftOverPerson: settingsRaw[2][0],
     senderNameRaw: settingsRaw[3][0],
     subjectRaw: settingsRaw[4][0],
-    htmlBodyRaw: settingsRaw[5][0]
+    htmlBodyRaw: settingsRaw[5][0],
+    useMunkresAlgo: settingsRaw[6][0]
   };
 
   return settings;

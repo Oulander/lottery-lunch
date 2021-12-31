@@ -2,8 +2,6 @@
 
 ## Usage instructions
 
-TODO: Detailed Instructions to use the tool without setting up the development environment --> README in Google Drive Example
-
 Here's a template folder including necessary spreadsheet and form templates. Create a copy of them to your personal or organization's Google Drive:
 [Google Drive Example.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
 
@@ -13,9 +11,10 @@ Make sure that
 - If your spreadsheet is in another language, rename the form response sheet to `Form responses 1`
 - Read the instructions / pairing logic from spreadsheet tab called `Column types README`
 - Change all necessary info from the spreadsheet tab called `settings`. Also, don't change the name of the `settings` tab.
+  - Notice! Using Hungarian algorithm gives optimal lottery pairs, but it's very slow (O(n<sup>3</sup>)) with many lottery participants (e.g. 150 participants -> ~5min runtime). Based on you account (normal or GSuite), Google app script has a 6 or 30 minute execution time limit, which you can check from your spreadsheet's `Lottery Lunch Menu`.
 - Don't change the name of the `meetings` tab.
 
-Then, 
+Then,
 1. Send the form to desired people
 2. Press `Genererate meetings` button from the spreadsheet's `Lottery Lunch Menu` (new meetings should appear to the meetings tab)
 3. If everything looks ok, send the mails by pressing `Send emails` button (emails are sent when a timestamps appear to the `meetings` tab

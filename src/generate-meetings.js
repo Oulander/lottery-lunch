@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   readParticipants,
   readMeetings,
@@ -6,6 +7,8 @@ import {
 } from './read-and-write-spreadsheets';
 
 import writeScoredMeetingsLog from './write-logs';
+
+const munkres = require('munkres-js'); // a.k.a Hungarian algorithm
 
 const SETTINGS = readSettings();
 
@@ -95,6 +98,7 @@ function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participa
   const pastMeetingPersonEmails = Object.keys(pastMeetingsPerPerson);
   const timestamp = Utilities.formatDate(new Date(), 'GMT+1', 'dd/MM/yyyy');
   const scoredMeetingsLogArr = [];
+  const scoredMeetingsByPerson = {};
 
   const meetingAmountsPerPerson = pastMeetingPersonEmails.map(email => {
     return pastMeetingsPerPerson[email].length;
@@ -129,15 +133,86 @@ function getScoredMeetings(allPossibleMeetings, pastMeetingsPerPerson, participa
       randomScore
     ]);
 
+    scoredMeetingsByPerson[person1Id] = {
+      ...scoredMeetingsByPerson[person1Id],
+      [person2Id]: score
+    };
+
+    scoredMeetingsByPerson[person2Id] = {
+      ...scoredMeetingsByPerson[person2Id],
+      [person1Id]: score
+    };
+
     return [meeting, score];
   });
 
   writeScoredMeetingsLog(scoredMeetingsLogArr);
 
-  return possibleMeetingsScored;
+  return [possibleMeetingsScored, scoredMeetingsByPerson];
+}
+
+function init2DMatrix(dimensions) {
+  const array = [];
+  for (let i = 0; i < dimensions[0]; i += 1) {
+    array.push(dimensions.length === 1 ? 100 : init2DMatrix(dimensions.slice(1)));
+  }
+  return array;
+}
+
+/**
+ * Create two dimensional matrix of participants' meeting scores.
+ * Needed for Hungarian algorithm (munkres).
+ *
+ * @param {Array[String]} participants - participant emails
+ * @param {Array[]} allPossibleMeetings - email pairs and their scores
+ *
+ * @returns {Array[]} Score matrix
+ */
+function createScoreMatrix(participants, scoredMeetingsByPerson) {
+  const scoreMatrix = init2DMatrix([participants.length, participants.length]);
+
+  for (let y = 0; y < scoreMatrix.length; y += 1) {
+    for (let x = 0; x < scoreMatrix.length; x += 1) {
+      if (x !== y) {
+        const participant1 = participants[y];
+        const participant2 = participants[x];
+        const meetingScore =
+          scoredMeetingsByPerson[participant1][participant2] ||
+          scoredMeetingsByPerson[participant2][participant1];
+        scoreMatrix[y][x] = meetingScore.toFixed(4) || NaN;
+      }
+    }
+  }
+
+  return scoreMatrix;
+}
+
+function chooseMeetingsBasedOnMunkresAlgorithm(participantIds, scoredMeetingsByPerson) {
+  console.time('chooseMeetingsBasedOnMunkres()');
+  const scoreMatrix = createScoreMatrix(participantIds, scoredMeetingsByPerson);
+  Logger.log(`scoreMatrix.length: ${scoreMatrix.length}`);
+  const selectedPairs = munkres(scoreMatrix); // Notice! O(n^3) time complexity
+  const meetingsArr = [];
+  const meetingsObj = {};
+
+  selectedPairs.forEach(([p1Idx, p2Idx]) => {
+    const p1 = participantIds[p1Idx];
+    const p2 = participantIds[p2Idx];
+    const paired = p1 in meetingsObj || p2 in meetingsObj;
+
+    if (!paired) {
+      meetingsArr.push([p1, p2, scoreMatrix[p1Idx][p2Idx]]);
+      meetingsObj[p1] = true;
+      meetingsObj[p2] = true;
+    }
+  });
+
+  console.timeEnd('chooseMeetingsBasedOnMunkres()');
+  return meetingsArr;
 }
 
 function chooseMeetingsBasedOnScore(possibleMeetingsScored) {
+  console.time('chooseMeetingsBasedOnScore()');
   const scoredSortedMeetings = possibleMeetingsScored.sort((a, b) => (a[1] > b[1] ? 1 : -1));
 
   const meetingsThisRound = {};
@@ -158,6 +233,7 @@ function chooseMeetingsBasedOnScore(possibleMeetingsScored) {
     }
   }
 
+  console.timeEnd('chooseMeetingsBasedOnScore()');
   return meetingsArray;
 }
 
@@ -202,13 +278,15 @@ export default function generateMeetings() {
 
   const allPossibleMeetings = generatePossibleMeetings(allParticipantIds);
 
-  const possibleMeetingsScored = getScoredMeetings(
+  const [possibleMeetingsScored, scoredMeetingsByPerson] = getScoredMeetings(
     allPossibleMeetings,
     pastMeetingsPerPerson,
     participants
   );
 
-  const meetingsArray = chooseMeetingsBasedOnScore(possibleMeetingsScored);
+  const meetingsArray = SETTINGS.useMunkresAlgo
+    ? chooseMeetingsBasedOnMunkresAlgorithm(allParticipantIds, scoredMeetingsByPerson)
+    : chooseMeetingsBasedOnScore(possibleMeetingsScored);
 
   const meetingsArrayWithResponsiblePersonShuffled = meetingsArray.map(meeting =>
     Math.random() >= 0.5
