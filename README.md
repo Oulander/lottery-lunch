@@ -2,7 +2,22 @@
 
 ## Usage instructions
 
-TODO: Instructions to use the tool without setting up the development environment
+Here's a template folder including necessary spreadsheet and form templates. Create a copy of them to your personal or organization's Google Drive:
+[Google Drive Example.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
+
+Make sure that
+
+- the form output points to the spreadsheet. In detail, the form answers must point to a tab called `Form responses 1`
+- If your spreadsheet is in another language, rename the form response sheet to `Form responses 1`
+- Read the instructions / pairing logic from spreadsheet tab called `Column types README`
+- Change all necessary info from the spreadsheet tab called `settings`. Also, don't change the name of the `settings` tab.
+  - Notice! Using Hungarian algorithm gives optimal lottery pairs, but it's very slow (O(n<sup>3</sup>)) with many lottery participants (e.g. 150 participants -> ~5min runtime). Based on you account (normal or GSuite), Google app script has a 6 or 30 minute execution time limit, which you can check from your spreadsheet's `Lottery Lunch Menu`.
+- Don't change the name of the `meetings` tab.
+
+Then,
+1. Send the form to desired people
+2. Press `Genererate meetings` button from the spreadsheet's `Lottery Lunch Menu` (new meetings should appear to the meetings tab)
+3. If everything looks ok, send the mails by pressing `Send emails` button (emails are sent when a timestamps appear to the `meetings` tab
 
 ## Development instructions
 
@@ -20,20 +35,22 @@ https://github.com/labnol/apps-script-starter
 
 ### Check that you have the required spreadsheet and form.
 
-Read instructions.pdf and copy initial form to your drive from [this link.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
+Copy initial form and spreadsheet to your drive from [this link.](https://drive.google.com/open?id=1QCP4pGlA-mGtN0qac88k1IgUi6QAOzM3)
 
 Make sure that
 
 - the form output points to the spreadsheet
 - there is a `Form responses 1` sheet in the spreadsheet
 - If your spreadsheet is in another language, rename the form response sheet to `Form responses 1`
+- Read the instructions / pairing logic from spreadsheet tab called `Column types README`
+- Change all necessary info from the spreadsheet tab called `settings` 
 
 ### Get the source code
 
-Clone the repo and run npm install.
+Clone this (or the original) repo and run npm install.
 
 ```
-git clone https://github.com/Oulander/lottery-lunch lottery-lunch
+git clone https://github.com/athenekilta/lottery-lunch.git
 cd lottery-lunch
 npm install
 ```
@@ -92,7 +109,7 @@ Entrypoint main = code-3.4.1.js
     + 1 hidden module
 ```
 
-Login to Google with Clasp to allow pushing code to the spreadsheet from the command line
+Login to Google with Clasp to allow pushing code to the spreadsheet from the command line. Login with the account you will be using for the lottery lunch tool. It might be convenient to create a separate lottery lunch account, especially for organizational use.
 
 ```
 npx clasp login
