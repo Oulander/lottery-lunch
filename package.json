@@ -24,7 +24,8 @@
     "apps-script"
   ],
   "dependencies": {
-    "core-js": "^2.6.5"
+    "core-js": "^2.6.5",
+    "munkres-js": "^1.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
